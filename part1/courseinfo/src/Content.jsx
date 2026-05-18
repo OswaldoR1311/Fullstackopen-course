@@ -1,11 +1,13 @@
 import Part from './Part'
+import Total from './Total'
 
-const Content = (props) => {
+const Content = ({ parts }) => {
   return (
     <>
-      <Part part={props.parts[0].name} exercises={props.parts[0].exercises} />
-      <Part part={props.parts[1].name} exercises={props.parts[1].exercises} />
-      <Part part={props.parts[2].name} exercises={props.parts[2].exercises} />
+      {parts.map((p) => (
+        <Part key={p.name} name={p.name} exercises={p.exercises} />
+      ))}
+      <Total parts={parts} />
     </>
   )
 }

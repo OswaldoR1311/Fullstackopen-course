@@ -1,10 +1,9 @@
-import Header from './Header'
-import Content from './Content'
-import Total from './Total'
+import Course from './Course'
 
 const App = () => {
   const course = {
     name: 'Half Stack application development',
+    id: 1,
     parts: [
       {
         name: 'Fundamentals of React',
@@ -20,14 +19,17 @@ const App = () => {
         name: 'State of a Component',
         exercises: 14,
       },
+
+      {
+        name: 'Complex state Redux',
+        exercises: 11,
+      },
     ],
   }
 
   return (
     <div>
-      <Header course={course.name} />
-      <Content parts={course.parts} />
-      <Total parts={course.parts} />
+      <Course course={course} />
     </div>
   )
 }
