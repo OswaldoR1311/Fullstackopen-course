@@ -44,7 +44,20 @@ const Form = ({ formValues, message, status, onMessage, onStatus }) => {
             ),
           )
         }
-        phonebookService.update(findPerson.id, changedObject).then(eventHandler)
+
+        const errorHandler = () => {
+          console.log('negativo')
+          onMessage(`${findPerson.name} ${notificationOptions.editFail}`)
+          onStatus(notificationStatusOptions.error)
+          setTimeout(() => {
+            onMessage(null)
+            onStatus(null)
+          }, 3000)
+        }
+        phonebookService
+          .update(findPerson.id, changedObject)
+          .then(eventHandler)
+          .catch(errorHandler)
         onMessage(`${findPerson.name} ${notificationOptions.editSuccess}`)
         onStatus(notificationStatusOptions.success)
         setTimeout(() => {
@@ -53,12 +66,6 @@ const Form = ({ formValues, message, status, onMessage, onStatus }) => {
         }, 3000)
         handleCleanInputs()
       } else {
-        onMessage(`${findPerson.name} ${notificationOptions.editSuccess}`)
-        onStatus(notificationStatusOptions.success)
-        setTimeout(() => {
-          onMessage(null)
-          onStatus(null)
-        }, 3000)
         handleCleanInputs()
       }
     }

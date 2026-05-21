@@ -4,31 +4,6 @@
       "name": "Dan Abramov",
       "phone": "123456",
       "id": "3"
-    },
-    {
-      "name": "Lionel Messi",
-      "phone": "147852369",
-      "id": "LthkPmiosEA"
-    },
-    {
-      "name": "Karolina Rodriguez",
-      "phone": "0412-1519580",
-      "id": "ugAW-NflYQU"
-    },
-    {
-      "name": "Oswaldo Rodriguez",
-      "phone": "147845978",
-      "id": "8rbDLRcbHLw"
-    },
-    {
-      "name": "Cristiano Ronaldo",
-      "phone": "14523654",
-      "id": "S-1xOL_C_a8"
-    },
-    {
-      "name": "Nidia Moreno",
-      "phone": "0424-9395895",
-      "id": "ilaMXHmOXzo"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
