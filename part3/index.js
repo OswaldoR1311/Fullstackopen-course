@@ -17,11 +17,11 @@ let persons = [
     name: 'Dan Abramov',
     number: '12-43-234345',
   },
-  //   {
-  //     id: '4',
-  //     name: 'Mary Poppendieck',
-  //     number: '39-23-6423122',
-  //   },
+  {
+    id: '4',
+    name: 'Mary Poppendieck',
+    number: '39-23-6423122',
+  },
 ]
 
 app.use(express.json())
@@ -43,6 +43,19 @@ app.get('/api/persons/:id', (req, res) => {
   const findPerson = persons.find((person) => person.id === id)
   if (findPerson) {
     return res.json(findPerson)
+  } else {
+    return res
+      .status(400)
+      .json({ error: 'Entry does not exist in the phonebook' })
+  }
+})
+
+app.delete('/api/persons/:id', (req, res) => {
+  const id = req.params.id
+  const findPerson = persons.find((person) => person.id === id)
+  if (findPerson) {
+    persons = persons.filter((person) => person.id !== id)
+    return res.status(204).end()
   } else {
     return res
       .status(400)
