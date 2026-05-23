@@ -24,6 +24,10 @@ let persons = [
   },
 ]
 
+const generateID = () => {
+  return Math.floor(Math.random() * 1000000)
+}
+
 app.use(express.json())
 
 app.get('/api/persons', (req, res) => {
@@ -39,7 +43,7 @@ app.get('/info', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res) => {
-  const id = req.params.id
+  const id = Number(req.params.id)
   const findPerson = persons.find((person) => person.id === id)
   if (findPerson) {
     return res.json(findPerson)
@@ -51,7 +55,7 @@ app.get('/api/persons/:id', (req, res) => {
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-  const id = req.params.id
+  const id = Number(req.params.id)
   const findPerson = persons.find((person) => person.id === id)
   if (findPerson) {
     persons = persons.filter((person) => person.id !== id)
@@ -61,6 +65,23 @@ app.delete('/api/persons/:id', (req, res) => {
       .status(400)
       .json({ error: 'Entry does not exist in the phonebook' })
   }
+})
+
+app.post('/api/persons', (req, res) => {
+  const body = req.body
+  if (!body.name || !body.number) {
+    return res.status(404).json({ error: 'Missing name or number' })
+  }
+
+  const newPerson = {
+    name: body.name,
+    number: body.number,
+    id: generateID(),
+  }
+
+  persons = persons.concat(newPerson)
+
+  res.status(201).json(newPerson)
 })
 
 const PORT = 3001
