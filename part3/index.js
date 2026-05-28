@@ -38,17 +38,12 @@ app.get('/api/persons/:id', (req, res) => {
   }
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const findPerson = persons.find((person) => person.id === id)
-  if (findPerson) {
-    persons = persons.filter((person) => person.id !== id)
-    return res.status(204).end()
-  } else {
-    return res
-      .status(400)
-      .json({ error: 'Entry does not exist in the phonebook' })
-  }
+app.delete('/api/persons/:id', (req, res, next) => {
+  Person.findByIdAndDelete(req.params.id)
+    .then((result) => {
+      res.status(204).end()
+    })
+    .catch((error) => next(error))
 })
 
 app.post('/api/persons', (req, res) => {
@@ -66,6 +61,22 @@ app.post('/api/persons', (req, res) => {
     res.status(201).json(savedPerson)
   })
 })
+
+const unknownEndpoints = (request, response) => {
+  response.status(404).send({ error: 'unknown Endpoint' })
+}
+
+app.use(unknownEndpoints)
+
+const errorHandler = (error, request, response, next) => {
+  console.log(error.name)
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+  next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = 3001
 app.listen(PORT, () => {

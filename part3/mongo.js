@@ -7,19 +7,6 @@ if (process.argv.length < 3) {
 
 const password = process.argv[2]
 
-const url = `mongodb+srv://fullstack-oswaldo:oswaldoemilio@cluster0.wo2v9ry.mongodb.net/phoneBookApp?appName=Cluster0`
-
-mongoose.set('strictQuery', false)
-
-mongoose.connect(url, { family: 4 })
-
-const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
-})
-
-const Person = new mongoose.model('Person', personSchema)
-
 const newPerson = new Person({ name: 'Oswaldo', number: '123456789' })
 
 if (process.argv.length === 3) {
