@@ -10,8 +10,8 @@ const password = process.argv[2]
 const newPerson = new Person({ name: 'Oswaldo', number: '123456789' })
 
 if (process.argv.length === 3) {
-  Person.find({}).then((result) => {
-    result.forEach((person) => console.log(`${person.name} ${person.number}`))
+  Person.find({}).then(result => {
+    result.forEach(person => console.log(`${person.name} ${person.number}`))
     mongoose.connection.close()
   })
 } else if (process.argv.length === 5) {
@@ -19,9 +19,9 @@ if (process.argv.length === 3) {
     name: process.argv[3],
     number: process.argv[4],
   })
-  newPerson.save().then((result) => {
+  newPerson.save().then(result => {
     console.log(
-      `added ${newPerson.name} number ${newPerson.number} to phonebook`,
+      `added ${newPerson.name} number ${newPerson.number} to phonebook`
     )
     mongoose.connection.close()
   })
