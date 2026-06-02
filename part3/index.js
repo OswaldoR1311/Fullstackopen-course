@@ -33,19 +33,12 @@ app.get('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-<<<<<<< HEAD
 app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndDelete(req.params.id)
-    .then((result) => {
+    .then(result => {
       res.status(204).end()
     })
-    .catch((error) => next(error))
-=======
-app.delete('/api/persons/:id', (req, res) => {
-  Person.findByIdAndDelete(req.params.id).then(result => {
-    res.status(204).end()
-  })
->>>>>>> 79454a5292f871c071cc4484fec4ab45cb2b6414
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', (req, res) => {
@@ -66,39 +59,11 @@ app.post('/api/persons', (req, res) => {
   })
 })
 
-<<<<<<< HEAD
 const unknownEndpoints = (request, response) => {
   response.status(404).send({ error: 'unknown Endpoint' })
 }
 
 app.use(unknownEndpoints)
-=======
-app.put('/api/persons/:id', (req, res, next) => {
-  const { name, phone } = req.body
-
-  Person.findById(req.params.id)
-    .then(person => {
-      if (!person) {
-        return res.status(404).end()
-      }
-
-      person.name = name
-      person.number = phone
-
-      return person.save().then(updatedPerson => {
-        res.json(updatedPerson)
-      })
-    })
-
-    .catch(error => next(error))
-})
-
-const unknownEndpoint = (request, response, next) => {
-  response.status(404).send({ error: 'Unknown endpoint' })
-}
-
-app.use(unknownEndpoint)
->>>>>>> 79454a5292f871c071cc4484fec4ab45cb2b6414
 
 const errorHandler = (error, request, response, next) => {
   console.log(error.name)
@@ -108,13 +73,9 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
-<<<<<<< HEAD
 app.use(errorHandler)
 
 const PORT = 3001
-=======
-const PORT = process.env.PORT
->>>>>>> 79454a5292f871c071cc4484fec4ab45cb2b6414
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
