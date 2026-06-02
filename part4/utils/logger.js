@@ -1,8 +1,8 @@
 const infoLog = (...params) => {
-	console.log(...params)
+  console.log(...params)
 }
 const errorLog = (...params) => {
-	console.error(...params)
+  console.error(...params)
 }
 
 module.exports = { infoLog, errorLog }
