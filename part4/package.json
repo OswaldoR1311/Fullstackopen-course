@@ -1,24 +1,24 @@
 {
-  "name": "part4",
-  "version": "1.0.0",
-  "description": "",
-  "license": "ISC",
-  "author": "Oswaldo Rodríguez",
-  "type": "commonjs",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "format": "biome format --write .",
-    "lint": "biome lint --write .",
-    "check": "biome check --write .",
-    "dev": "node --watch index.js"
-  },
-  "dependencies": {
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "mongoose": "^9.6.3"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.4.16"
-  }
+	"name": "part4",
+	"version": "1.0.0",
+	"description": "",
+	"license": "ISC",
+	"author": "Oswaldo Rodríguez",
+	"type": "commonjs",
+	"main": "index.js",
+	"scripts": {
+		"test": "node --test",
+		"format": "biome format --write .",
+		"lint": "biome lint --write .",
+		"check": "biome check --write .",
+		"dev": "node --watch index.js"
+	},
+	"dependencies": {
+		"dotenv": "^17.4.2",
+		"express": "^5.2.1",
+		"mongoose": "^9.6.3"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.4.16"
+	}
 }
