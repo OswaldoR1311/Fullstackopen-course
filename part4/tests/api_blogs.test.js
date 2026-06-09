@@ -88,7 +88,7 @@ test('blog can be deleted', async () => {
 	const blogsAtStart = await api.get('/api/blogs')
 	const blogToDelete = blogsAtStart[0]
 
-	await api.delete(`/api/blogs/${blogToDelete._id}`).expect(204)
+	await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
 	const blogsAtEnd = await api.get('/api/blogs')
 
 	const ids = blogsAtEnd.map((b) => b.id)
