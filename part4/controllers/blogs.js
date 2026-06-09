@@ -31,15 +31,21 @@ blogRouter.delete('/:id', async (request, response) => {
 
 blogRouter.put('/:id', async (request, response) => {
 	const { title, author, url, likes } = request.body
-	const findedBlog = await Blog.findById(request.params.id)
-	if (!findedBlog) return response.status(404).end()
-	findedBlog.title = title
-	findedBlog.author = author
-	findedBlog.url = url
-	findedBlog.likes = likes
 
-	const updatedNote = await findedBlog.save()
-	response.json(updatedNote)
+	const blogToUpdate = { title, author, url, likes }
+	const updatedLikesForBlog = await Blog.findByIdAndUpdate(
+		request.params.id,
+		blogToUpdate,
+		{ new: true, runValidators: true, context: 'query' }
+	)
+
+	if (!updatedLikesForBlog) {
+		console.log('The blog does not exist')
+		return response.status(404).end()
+	}
+
+	console.log('Blog updated successfully')
+	await response.json(updatedLikesForBlog)
 })
 
 module.exports = blogRouter
