@@ -1,24 +1,29 @@
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
+	response.status(404).send({ error: 'unknown endpoint' })
 }
 
 const infoLogger = (request, response, next) => {
-  console.log('Method: ', request.method)
-  console.log('Path ', request.path)
-  console.log('Body ', request.body)
-  console.log('-----')
+	console.log('Method: ', request.method)
+	console.log('Path ', request.path)
+	console.log('Body ', request.body)
+	console.log('-----')
 
-  next()
+	next()
 }
 
 const errorHandler = (error, next, request, response) => {
-  console.log(error.name)
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  } else if (error.name === 'ValidationError') {
-    return response.status(400).send({ error: error.message })
-  }
-  next(error)
+	console.log(error.name)
+	if (error.name === 'CastError') {
+		return response.status(400).send({ error: 'malformatted id' })
+	} else if (error.name === 'ValidationError') {
+		return response.status(400).send({ error: error.message })
+	} else if (
+		error.name === 'MongoServerError' &&
+		error.message.includes('E11000 duplicate key error')
+	) {
+		return response.status(400).send('expected `username` to be unique')
+	}
+	next(error)
 }
 
 module.exports = { errorHandler, infoLogger, unknownEndpoint }

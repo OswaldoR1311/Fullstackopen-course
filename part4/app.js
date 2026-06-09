@@ -3,24 +3,26 @@ const mongoose = require('mongoose')
 const { infoLog, errorLog } = require('./utils/logger')
 const { MONGODB_URI } = require('./utils/config')
 const blogRouter = require('./controllers/blogs')
+const usersRouter = require('./controllers/users')
 const {
-  errorHandler,
-  infoLogger,
-  unknownEndpoint,
+	errorHandler,
+	infoLogger,
+	unknownEndpoint,
 } = require('./utils/middleware')
 
 const app = express()
 
 infoLog('connecting to MongoDB ', MONGODB_URI)
 mongoose
-  .connect(MONGODB_URI)
-  .then(() => infoLog('connected to MongoDB'))
-  .catch(error => errorLog('unable to connect MongoDB ', error.message))
+	.connect(MONGODB_URI)
+	.then(() => infoLog('connected to MongoDB'))
+	.catch((error) => errorLog('unable to connect MongoDB ', error.message))
 
 app.use(express.json())
 app.use(infoLogger)
 
 app.use('/api/blogs', blogRouter)
+app.use('/api/users', usersRouter)
 
 app.use(unknownEndpoint)
 app.use(errorHandler)
