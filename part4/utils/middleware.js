@@ -11,7 +11,7 @@ const infoLogger = (request, response, next) => {
 	next()
 }
 
-const errorHandler = (error, next, request, response) => {
+const errorHandler = (error, request, response, next) => {
 	console.log(error.name)
 	if (error.name === 'CastError') {
 		return response.status(400).send({ error: 'malformatted id' })
@@ -21,7 +21,9 @@ const errorHandler = (error, next, request, response) => {
 		error.name === 'MongoServerError' &&
 		error.message.includes('E11000 duplicate key error')
 	) {
-		return response.status(400).send('expected `username` to be unique')
+		return response
+			.status(400)
+			.send({ error: 'expected `username` to be unique' })
 	}
 	next(error)
 }
