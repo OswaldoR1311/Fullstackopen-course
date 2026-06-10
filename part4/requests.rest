@@ -1,11 +1,26 @@
 GET http://localhost:3001/api/users
 
 ###
+GET http://localhost:3001/api/blogs
+
+###
 POST http://localhost:3001/api/users
 Content-Type: application/json
 
 {
-  "username": "KaroR1311",
-  "name": "Karolina Rodríguez",
-  "password": "karolina"
+  "username": "root",
+  "name": "Superuser",
+  "password": "123456"
+}
+
+###
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+  "title": "Haciendo otra prueba",
+  "author": "Oswaldo Rodriguez",
+  "url": "www.oswaldo.com",
+  "likes": 150,
+  "userId": "6a296a20d0b72d4ac56978c5"
 }
