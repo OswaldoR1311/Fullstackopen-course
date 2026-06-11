@@ -1,29 +1,18 @@
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
-const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
-// const { getTokenFrom } = require('../utils/middleware')
+const { userExtractor } = require('../utils/middleware')
 
 blogRouter.get('/', async (request, response) => {
 	const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
 	response.json(blogs)
 })
 
-blogRouter.post('/', async (request, response) => {
+blogRouter.post('/', userExtractor, async (request, response) => {
 	const { title, author, url, likes } = request.body
 
-	const decodedToken = jwt.verify(request.token, process.env.SECRET)
-
-	if (!decodedToken.id) {
-		return response.status(401).json({ error: 'token invalid' })
-	}
-
-	const user = await User.findById(decodedToken.id)
-
-	if (!user) {
-		return response.status(400).json({ error: 'userId missing or not valid' })
-	}
+	const user = request.user
 
 	if (!title || !url) {
 		return response.status(400).json({ error: 'Missing title or URL' })
@@ -33,8 +22,8 @@ blogRouter.post('/', async (request, response) => {
 		title,
 		author,
 		url,
-		likes,
-		user: user._id,
+		likes: likes || 0,
+		user: user.id,
 	})
 
 	const savedBlog = await newBlog.save()

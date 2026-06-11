@@ -47,4 +47,34 @@ const tokenExtractor = (request, response, next) => {
 	next()
 }
 
-module.exports = { errorHandler, infoLogger, unknownEndpoint, tokenExtractor }
+const userExtractor = async (request, response, next) => {
+	const token = request.token
+
+	if (!token) {
+		return response.status(401).json({ error: 'missing token' })
+	}
+
+	const decodedToken = jwt.verify(token, process.env.SECRET)
+
+	if (!decodedToken.id) {
+		return response.status(401).json({ error: 'invalid token' })
+	}
+
+	const findedUser = await User.findById(decodedToken.id)
+
+	if (!findedUser) {
+		return response.status(401).json({ error: 'user not found' })
+	}
+
+	request.user = findedUser
+
+	next()
+}
+
+module.exports = {
+	errorHandler,
+	infoLogger,
+	unknownEndpoint,
+	tokenExtractor,
+	userExtractor,
+}
