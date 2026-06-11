@@ -5,6 +5,7 @@ const { MONGODB_URI } = require('./utils/config')
 const blogRouter = require('./controllers/blogs')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
+const { tokenExtractor } = require('./utils/middleware')
 const {
 	errorHandler,
 	infoLogger,
@@ -22,6 +23,7 @@ mongoose
 app.use(express.json())
 app.use(infoLogger)
 
+app.use(tokenExtractor)
 app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogRouter)
 app.use('/api/users', usersRouter)

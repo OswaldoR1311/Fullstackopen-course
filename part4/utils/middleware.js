@@ -30,4 +30,21 @@ const errorHandler = (error, request, response, next) => {
 	next(error)
 }
 
-module.exports = { errorHandler, infoLogger, unknownEndpoint }
+const tokenExtractor = (request, response, next) => {
+	const authorization = request.get('authorization')
+	// if (authorization && authorization.startsWith('Bearer ')) {
+	// 	request.token = authorization.replace('Bearer ', '')
+	// } else {
+	// 	request.token = null
+	// }
+
+	//Improving security
+	if (authorization && authorization.toLowerCase().startsWith('Bearer ')) {
+		request.token = authorization.substring(7)
+	} else {
+		request.token = null
+	}
+	next()
+}
+
+module.exports = { errorHandler, infoLogger, unknownEndpoint, tokenExtractor }
