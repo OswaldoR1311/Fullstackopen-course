@@ -33,3 +33,15 @@ Content-Type: application/json
   "username": "KaroR1311",
   "password": "karolina"
 }
+
+###
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ikthcm9SMTMxMSIsImlkIjoiNmEyOTZhMjBkMGI3MmQ0YWM1Njk3OGM1IiwiaWF0IjoxNzgxMTM4MTcwfQ.XFIXFDtrYQ74GwDHn0gwMg3yJofc4BS7sQKYTvm9-LY
+
+{
+  "title": "Testing the token auth",
+  "author": "Oswaldo Rodríguez",
+  "url": "www.internet.com",
+  "likes": 0
+}
