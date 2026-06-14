@@ -58,6 +58,16 @@ const App = () => {
 		}
 	}
 
+	const handleLogout = async () => {
+		const confirmation = window.confirm('Are you sure to log out?')
+		if (confirmation) {
+			await window.localStorage.removeItem('loggedUser')
+			setUser(null)
+		} else {
+			return null
+		}
+	}
+
 	useEffect(() => {
 		blogService.getAll().then((responseBlogs) => {
 			setBlogs(responseBlogs)
@@ -82,6 +92,9 @@ const App = () => {
 					<h2>Blogs</h2>
 					<p>
 						<strong>{user.name}</strong> Logged in
+						<button type="button" onClick={handleLogout}>
+							log out
+						</button>
 					</p>
 					{blogs.map((b) => (
 						<Blog key={b.id} blog={b} />
