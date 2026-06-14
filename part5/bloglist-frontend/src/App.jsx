@@ -9,6 +9,10 @@ const App = () => {
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
 	const [errorMessage, setErrorMessage] = useState(null)
+	const [title, setTitle] = useState('')
+	const [author, setAuthor] = useState('')
+	const [url, setUrl] = useState('')
+	const [likes, setLikes] = useState(0)
 	const [blogs, setBlogs] = useState([])
 
 	const formLogin = () => (
@@ -36,6 +40,46 @@ const App = () => {
 					</label>
 				</div>
 				<button type="submit">login</button>
+			</form>
+		</div>
+	)
+
+	const blogForm = () => (
+		<div>
+			<h3>Create new blog</h3>
+			<form>
+				<div>
+					<label>
+						title
+						<input
+							value={title}
+							type="text"
+							onChange={({ target }) => setTitle(target.value)}
+						/>
+					</label>
+				</div>
+				<div>
+					<label>
+						author
+						<input
+							value={author}
+							type="text"
+							onChange={({ target }) => setTitle(target.value)}
+						/>
+					</label>
+				</div>
+				<div>
+					<label>
+						url
+						<input
+							value={url}
+							type="url"
+							onChange={({ target }) => setTitle(target.value)}
+						/>
+					</label>
+				</div>
+				<br />
+				<button type="submit">create</button>
 			</form>
 		</div>
 	)
@@ -96,6 +140,9 @@ const App = () => {
 							log out
 						</button>
 					</p>
+					<br />
+					{blogForm()}
+					<br />
 					{blogs.map((b) => (
 						<Blog key={b.id} blog={b} />
 					))}
