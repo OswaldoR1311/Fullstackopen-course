@@ -5,7 +5,6 @@ import Notification from './components/Notification'
 import { notificationStatusOptions } from './constants'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import setError from './utils/helperFunctions'
 
 const App = () => {
 	const [user, setUser] = useState(null)
@@ -115,7 +114,10 @@ const App = () => {
 			setUser(user)
 			cleanInputs()
 		} catch {
-			setError('wrong username or password', notificationStatusOptions.error)
+			setNotification(
+				'wrong username or password',
+				notificationStatusOptions.error,
+			)
 		}
 	}
 
@@ -145,7 +147,7 @@ const App = () => {
 			setBlogs(blogs.concat(returnedBlog))
 			cleanInputs()
 		} catch {
-			setError('blog not added', notificationStatusOptions.error)
+			setNotification('blog not added', notificationStatusOptions.error)
 		}
 	}
 
