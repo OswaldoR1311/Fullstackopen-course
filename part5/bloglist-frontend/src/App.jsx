@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react'
 import Blog from './components/Blog'
 import Footer from './components/Footer'
+import Notification from './components/Notification'
+import { notificationStatusOptions } from './constants'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import setError from './utils/helperFunctions'
 
 const App = () => {
 	const [user, setUser] = useState(null)
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
-	const [errorMessage, setErrorMessage] = useState(null)
+	const [notificationMessage, setNotificationMessage] = useState(null)
+	const [notificationStatus, setNotificationStatus] = useState(null)
 	const [title, setTitle] = useState('')
 	const [author, setAuthor] = useState('')
 	const [url, setUrl] = useState('')
@@ -47,7 +51,7 @@ const App = () => {
 	const blogForm = () => (
 		<div>
 			<h3>Create new blog</h3>
-			<form>
+			<form onSubmit={handleAddBlog}>
 				<div>
 					<label>
 						title
@@ -64,7 +68,7 @@ const App = () => {
 						<input
 							value={author}
 							type="text"
-							onChange={({ target }) => setTitle(target.value)}
+							onChange={({ target }) => setAuthor(target.value)}
 						/>
 					</label>
 				</div>
@@ -74,7 +78,7 @@ const App = () => {
 						<input
 							value={url}
 							type="url"
-							onChange={({ target }) => setTitle(target.value)}
+							onChange={({ target }) => setUrl(target.value)}
 						/>
 					</label>
 				</div>
@@ -84,21 +88,34 @@ const App = () => {
 		</div>
 	)
 
+	const setNotification = (message, status) => {
+		setNotificationMessage(message)
+		setNotificationStatus(status)
+
+		setTimeout(() => {
+			setNotificationMessage(null)
+			setNotificationStatus(null)
+		}, 5000)
+	}
+
+	const cleanInputs = () => {
+		setUsername('')
+		setPassword('')
+		setTitle('')
+		setAuthor('')
+		setUrl('')
+	}
+
 	const handleLogin = async (event) => {
 		event.preventDefault()
-		console.log('Se esta ejecutando ? ', { username, password })
 		try {
 			const user = await loginService.login({ username, password })
 			window.localStorage.setItem('loggedUser', JSON.stringify(user))
 			blogService.setToken(user.token)
 			setUser(user)
-			setUsername('')
-			setPassword('')
+			cleanInputs()
 		} catch {
-			setErrorMessage('wrong credentials')
-			setTimeout(() => {
-				setErrorMessage(null)
-			}, 5000)
+			setError('wrong username or password', notificationStatusOptions.error)
 		}
 	}
 
@@ -109,6 +126,26 @@ const App = () => {
 			setUser(null)
 		} else {
 			return null
+		}
+	}
+
+	const handleAddBlog = async (event) => {
+		event.preventDefault()
+		const newBlog = {
+			title,
+			author,
+			url,
+			likes: 0,
+		}
+
+		try {
+			const returnedBlog = await blogService.createBlog(newBlog)
+			const message = `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
+			setNotification(message, notificationStatusOptions.success)
+			setBlogs(blogs.concat(returnedBlog))
+			cleanInputs()
+		} catch {
+			setError('blog not added', notificationStatusOptions.error)
 		}
 	}
 
@@ -129,11 +166,11 @@ const App = () => {
 
 	return (
 		<div>
-			{user === null ? (
-				formLogin()
-			) : (
+			<h2>Blogs</h2>
+			<Notification message={notificationMessage} status={notificationStatus} />
+			{!user && formLogin()}
+			{user && (
 				<>
-					<h2>Blogs</h2>
 					<p>
 						<strong>{user.name}</strong> Logged in
 						<button type="button" onClick={handleLogout}>
