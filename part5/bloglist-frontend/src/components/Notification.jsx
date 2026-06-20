@@ -1,5 +1,4 @@
 const Notification = ({ message, status }) => {
-	console.log({ message, status })
 	if (!message) {
 		return null
 	}
