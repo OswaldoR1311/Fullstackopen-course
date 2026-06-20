@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Footer from './components/Footer'
@@ -17,6 +17,8 @@ const App = () => {
 	const [notificationStatus, setNotificationStatus] = useState(null)
 	const [blogs, setBlogs] = useState([])
 
+	const blogRef = useRef()
+
 	const formLogin = () => (
 		<Togglable buttonLabel={'login'}>
 			<LoginForm
@@ -30,8 +32,8 @@ const App = () => {
 	)
 
 	const blogForm = () => (
-		<Togglable buttonLabel={'cancel'}>
-			<BlogForm />
+		<Togglable buttonLabel={'add new blog'} ref={blogRef}>
+			<BlogForm createBlog={handleAddBlog} />
 		</Togglable>
 	)
 
@@ -52,7 +54,6 @@ const App = () => {
 			window.localStorage.setItem('loggedUser', JSON.stringify(user))
 			blogService.setToken(user.token)
 			setUser(user)
-			cleanInputs()
 		} catch {
 			setNotification(
 				'wrong username or password',
@@ -71,21 +72,13 @@ const App = () => {
 		}
 	}
 
-	const handleAddBlog = async (event) => {
-		event.preventDefault()
-		const newBlog = {
-			title,
-			author,
-			url,
-			likes: 0,
-		}
-
+	const handleAddBlog = async (blogObject) => {
 		try {
-			const returnedBlog = await blogService.createBlog(newBlog)
+			blogRef.current.toggleVisibility()
+			const returnedBlog = await blogService.createBlog(blogObject)
 			const message = `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
 			setNotification(message, notificationStatusOptions.success)
 			setBlogs(blogs.concat(returnedBlog))
-			cleanInputs()
 		} catch {
 			setNotification('blog not added', notificationStatusOptions.error)
 		}
