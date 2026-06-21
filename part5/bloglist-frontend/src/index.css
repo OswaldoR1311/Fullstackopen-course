@@ -5,8 +5,11 @@ h2 {
 
 .blog {
 	color: grey;
-	padding-top: 5px;
 	font-size: 15px;
+	border: 1px solid black;
+	margin-bottom: 8px;
+	border-radius: 6px;
+	padding: 8px;
 }
 
 .notification {
