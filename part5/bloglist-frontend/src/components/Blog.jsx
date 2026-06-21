@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, onUpdate }) => {
 	const [visible, setVisible] = useState(false)
 
 	return (
@@ -23,6 +23,7 @@ const Blog = ({ blog }) => {
 						<button
 							type="button"
 							style={{ flexShrink: 0, alignSelf: 'center', marginLeft: 8 }}
+							onClick={onUpdate}
 						>
 							like
 						</button>

@@ -84,6 +84,21 @@ const App = () => {
 		}
 	}
 
+	const handleUpdate = async (id) => {
+		const blog = blogs.find((blog) => blog.id === id)
+		const changedBlog = { ...blog, likes: blog.likes + 1 }
+
+		try {
+			const updatedBlog = await blogService.update(id, changedBlog)
+			setBlogs(blogs.map((blog) => (blog.id === id ? updatedBlog : blog)))
+		} catch {
+			setNotification(
+				'error handling like button',
+				notificationStatusOptions.error,
+			)
+		}
+	}
+
 	useEffect(() => {
 		blogService.getAll().then((responseBlogs) => {
 			setBlogs(responseBlogs)
@@ -116,7 +131,7 @@ const App = () => {
 					{blogForm()}
 					<br />
 					{blogs.map((b) => (
-						<Blog key={b.id} blog={b} />
+						<Blog key={b.id} blog={b} onUpdate={() => handleUpdate(b.id)} />
 					))}
 				</>
 			)}
