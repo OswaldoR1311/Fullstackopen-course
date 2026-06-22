@@ -67,6 +67,8 @@ const App = () => {
 		if (confirmation) {
 			await window.localStorage.removeItem('loggedUser')
 			setUser(null)
+			setUsername('')
+			setPassword('')
 		} else {
 			return null
 		}
@@ -100,10 +102,12 @@ const App = () => {
 	}
 
 	useEffect(() => {
-		blogService.getAll().then((responseBlogs) => {
-			setBlogs(responseBlogs)
-		})
-	}, [])
+		if (user) {
+			blogService.getAll(user.token).then((responseBlogs) => {
+				setBlogs(responseBlogs)
+			})
+		}
+	}, [user])
 
 	useEffect(() => {
 		const loggedUser = window.localStorage.getItem('loggedUser')
@@ -113,6 +117,35 @@ const App = () => {
 			blogService.setToken(user.token)
 		}
 	}, [])
+
+	async function removeBlog(id) {
+		console.log('Estamos removiendo el recurso', id)
+		const findBlog = blogs.find((blog) => blog.id === id)
+		if (!findBlog) {
+			setNotification(
+				'the blog does not exist',
+				notificationStatusOptions.error,
+			)
+		}
+
+		try {
+			const answer = window.confirm(
+				`Remove blog ${findBlog.title} by ${findBlog.author}`,
+			)
+			if (answer) {
+				await blogService.removeBlog(id)
+				setBlogs(blogs.filter((blog) => blog.id !== id))
+				setNotification(
+					'Blog deleted succesfully',
+					notificationStatusOptions.success,
+				)
+			}
+		} catch {
+			setNotification('an error ocurrs', notificationStatusOptions.error)
+		}
+	}
+
+	const sortedBlogsByLikes = blogs.sort((a, b) => b.likes - a.likes)
 
 	return (
 		<div>
@@ -130,9 +163,18 @@ const App = () => {
 					<br />
 					{blogForm()}
 					<br />
-					{blogs.map((b) => (
-						<Blog key={b.id} blog={b} onUpdate={() => handleUpdate(b.id)} />
-					))}
+					{blogs.length === 0 ? (
+						<div>You dont have blogs yet</div>
+					) : (
+						sortedBlogsByLikes.map((b) => (
+							<Blog
+								key={b.id}
+								blog={b}
+								onUpdate={() => handleUpdate(b.id)}
+								onRemove={() => removeBlog(b.id)}
+							/>
+						))
+					)}
 				</>
 			)}
 			<Footer />
