@@ -4,8 +4,19 @@ const jwt = require('jsonwebtoken')
 require('dotenv').config()
 const { userExtractor } = require('../utils/middleware')
 
-blogRouter.get('/', async (request, response) => {
-	const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
+// blogRouter.get('/', async (request, response) => {
+// 	const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
+// 	response.json(blogs)
+// })
+
+blogRouter.get('/', userExtractor, async (request, response) => {
+	const userId = request.user.id
+
+	const blogs = await Blog.find({ user: userId }).populate('user', {
+		username: 1,
+		name: 1,
+	})
+
 	response.json(blogs)
 })
 
