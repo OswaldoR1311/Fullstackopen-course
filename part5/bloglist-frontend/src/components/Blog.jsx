@@ -6,7 +6,9 @@ const Blog = ({ blog, onUpdate, onRemove }) => {
 	return (
 		<div className="blog">
 			<div style={{ display: 'flex' }}>
-				<h3>{blog.title}</h3>
+				<h3>
+					{blog.title} {blog.author}
+				</h3>
 				<button
 					style={{ flexShrink: 0, alignSelf: 'center', marginLeft: 8 }}
 					type="button"
@@ -29,7 +31,6 @@ const Blog = ({ blog, onUpdate, onRemove }) => {
 							like
 						</button>
 					</div>
-					<p>{blog.author}</p>
 					<button className="remove" type="button" onClick={onRemove}>
 						remove
 					</button>
