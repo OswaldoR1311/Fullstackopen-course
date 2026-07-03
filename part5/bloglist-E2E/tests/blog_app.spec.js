@@ -56,5 +56,18 @@ test.describe('Blog App', () => {
 				page.getByText('a test blog by playwright by playwright'),
 			).toBeVisible()
 		})
+
+		test('a blog can be liked', async ({ page }) => {
+			const blogContainer = page.locator('.blog').filter({
+				hasText: 'a test blog by playwright by playwright',
+			})
+
+			await blogContainer.getByRole('button', { name: 'view' }).click()
+
+			const likeButton = blogContainer.getByRole('button', { name: 'like' })
+			await likeButton.click()
+
+			await expect(blogContainer.getByText('likes 1')).toBeVisible()
+		})
 	})
 })
