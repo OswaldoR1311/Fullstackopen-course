@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test')
+const { userLogin, createBlog } = require('./helpers')
 
 test.describe('Blog App', () => {
 	test.beforeEach(async ({ page, request }) => {
@@ -28,25 +29,32 @@ test.describe('Blog App', () => {
 
 	test.describe('Login', () => {
 		test('succeeds with correct credentials', async ({ page }) => {
-			await page.getByRole('button', { name: 'login' }).click()
-
-			await page.getByLabel('username').fill('root')
-			await page.getByLabel('password').fill('123456')
-
-			await page.getByRole('button', { name: 'login' }).click()
-
+			await userLogin(page, 'root', '123456')
 			await expect(page.getByText('Superuser logged in')).toBeVisible()
 		})
 	})
 
 	test('fails with the wrong credentials', async ({ page }) => {
-		await page.getByRole('button', { name: 'login' }).click()
-
-		await page.getByLabel('username').fill('root')
-		await page.getByLabel('password').fill('wrong')
-
-		await page.getByRole('button', { name: 'login' }).click()
-
+		await userLogin(page, 'root', 'wrong')
 		await expect(page.getByText('wrong username')).toBeVisible()
+	})
+
+	test.describe('When logged in', () => {
+		test.beforeEach(async ({ page }) => {
+			await userLogin(page, 'root', '123456')
+		})
+
+		test('a new blog can be created', async ({ page }) => {
+			await createBlog(
+				page,
+				'a test blog by playwright',
+				'playwright',
+				'https://playwright.dev',
+			)
+
+			await expect(
+				page.getByText('a test blog by playwright by playwright'),
+			).toBeVisible()
+		})
 	})
 })
