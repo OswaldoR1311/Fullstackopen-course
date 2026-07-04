@@ -83,7 +83,6 @@ test.describe('Blog App', () => {
 			await blogContainer.getByRole('button', { name: 'view' }).click()
 
 			page.once('dialog', (dialog) => {
-				//to handle the confirm window
 				expect(dialog.message()).toContain(
 					`Remove blog ${blogTitle} by ${blogAuthor}`,
 				)
@@ -98,17 +97,29 @@ test.describe('Blog App', () => {
 			const blogTitle = `Blog for delete button ${Date.now()}`
 			const blogAuthor = 'Oswaldo'
 
-			await request.post('http://localhost:3001/api/users', {
-				data: {
-					name: 'Superuser2',
-					username: 'root2',
-					password: '123456',
-				},
-			})
+			// await request.post('http://localhost:3001/api/users', {
+			// 	data: {
+			// 		name: 'Superuser2',
+			// 		username: 'root2',
+			// 		password: '123456',
+			// 	},
+			// })
 
 			await userLogin(page, 'root', '123456')
 			await createBlog(page, blogTitle, blogAuthor, 'http://playwright.dev')
 
-			
+			const blog = page.locator('.blog').filter({ hasText: blogTitle })
+
+			await expect(blog).toBeVisible()
+
+			page.once('dialog', (dialog) => {
+				expect(dialog.message()).toContain('Are you sure to log out?')
+				dialog.accept()
+			})
+
+			await page.getByRole('button', { name: 'log out' }).click()
+
+			await expect(page.getByRole('button', { name: 'login' })).toBeVisible()
+		})
 	})
 })
