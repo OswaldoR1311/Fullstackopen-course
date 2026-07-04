@@ -94,6 +94,21 @@ test.describe('Blog App', () => {
 			await expect(blogContainer).not.toBeVisible()
 		})
 
-		test()
+		test('only creator can see remove button', async ({ page, request }) => {
+			const blogTitle = `Blog for delete button ${Date.now()}`
+			const blogAuthor = 'Oswaldo'
+
+			await request.post('http://localhost:3001/api/users', {
+				data: {
+					name: 'Superuser2',
+					username: 'root2',
+					password: '123456',
+				},
+			})
+
+			await userLogin(page, 'root', '123456')
+			await createBlog(page, blogTitle, blogAuthor, 'http://playwright.dev')
+
+			
 	})
 })
