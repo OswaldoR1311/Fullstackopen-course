@@ -58,8 +58,11 @@ test.describe('Blog App', () => {
 		})
 
 		test('a blog can be liked', async ({ page }) => {
+			const blogTitle = `Blog for like test ${Date.now()}`
+			await createBlog(page, blogTitle, 'playwright', 'https://playwright.dev')
+
 			const blogContainer = page.locator('.blog').filter({
-				hasText: 'a test blog by playwright by playwright',
+				hasText: blogTitle,
 			})
 
 			await blogContainer.getByRole('button', { name: 'view' }).click()
@@ -69,5 +72,28 @@ test.describe('Blog App', () => {
 
 			await expect(blogContainer.getByText('likes 1')).toBeVisible()
 		})
+
+		test(' a blog can be deleted', async ({ page }) => {
+			const blogTitle = `Blog for delete test ${Date.now()}`
+			const blogAuthor = 'Oswaldo'
+			await createBlog(page, blogTitle, blogAuthor, 'https://playwright.dev')
+
+			const blogContainer = page.locator('.blog').filter({ hasText: blogTitle })
+
+			await blogContainer.getByRole('button', { name: 'view' }).click()
+
+			page.once('dialog', (dialog) => {
+				//to handle the confirm window
+				expect(dialog.message()).toContain(
+					`Remove blog ${blogTitle} by ${blogAuthor}`,
+				)
+				dialog.accept()
+			})
+
+			await blogContainer.getByRole('button', { name: 'remove' }).click()
+			await expect(blogContainer).not.toBeVisible()
+		})
+
+		test()
 	})
 })
