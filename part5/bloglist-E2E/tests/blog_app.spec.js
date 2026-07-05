@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test')
-const { userLogin, createBlog } = require('./helpers')
+const { userLogin, createBlog, giveLikes } = require('./helpers')
 
 test.describe('Blog App', () => {
 	test.beforeEach(async ({ page, request }) => {
@@ -125,6 +125,58 @@ test.describe('Blog App', () => {
 			await expect(
 				blog.getByRole('button', { name: 'remove' }),
 			).not.toBeVisible()
+		})
+
+		test('blog are sorted by likes', async ({ page }) => {
+			test.setTimeout(15000)
+			await userLogin(page, 'root', '123456')
+
+			await createBlog(
+				page,
+				'Blog alpha with less likes',
+				'user 1',
+				'https://testlink1.com',
+			)
+			await createBlog(
+				page,
+				'Blog beta with few some likes',
+				'user 2',
+				'https://testlink2.com',
+			)
+			await createBlog(
+				page,
+				'Blog gamma with a lot of likes',
+				'user 3',
+				'https://testlink3.com',
+			)
+
+			const lessLikesBlog = page
+				.locator('.blog')
+				.filter({ hasText: 'Blog alpha with less likes' })
+			const mediumLikesBlog = page
+				.locator('.blog')
+				.filter({ hasText: 'Blog beta with few some likes' })
+			const moreLikesBlog = page
+				.locator('.blog')
+				.filter({ hasText: 'Blog gamma with a lot of likes' })
+
+			await lessLikesBlog.getByRole('button', { name: 'view' }).click()
+			await mediumLikesBlog.getByRole('button', { name: 'view' }).click()
+			await moreLikesBlog.getByRole('button', { name: 'view' }).click()
+
+			await giveLikes(page, moreLikesBlog)
+			await giveLikes(page, moreLikesBlog)
+			await giveLikes(page, moreLikesBlog)
+
+			await giveLikes(page, mediumLikesBlog)
+
+			const blogs = page.locator('.blog')
+
+			await expect(blogs).toHaveCount(3)
+
+			await expect(blogs.nth(0)).toContainText('Blog gamma with a lot of likes')
+			await expect(blogs.nth(1)).toContainText('Blog beta with few some likes')
+			await expect(blogs.nth(2)).toContainText('Blog alpha with less likes')
 		})
 	})
 })

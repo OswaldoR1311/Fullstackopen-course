@@ -16,4 +16,9 @@ async function createBlog(page, title, author, url) {
 	await page.getByRole('button', { name: 'create' }).click()
 }
 
-module.exports = { userLogin, createBlog }
+async function giveLikes(page, blog) {
+	await blog.getByRole('button', { name: 'like' }).click()
+	await page.waitForTimeout(500)
+}
+
+module.exports = { userLogin, createBlog, giveLikes }
