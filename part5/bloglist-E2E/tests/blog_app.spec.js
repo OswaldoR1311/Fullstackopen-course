@@ -97,14 +97,6 @@ test.describe('Blog App', () => {
 			const blogTitle = `Blog for delete button ${Date.now()}`
 			const blogAuthor = 'Oswaldo'
 
-			// await request.post('http://localhost:3001/api/users', {
-			// 	data: {
-			// 		name: 'Superuser2',
-			// 		username: 'root2',
-			// 		password: '123456',
-			// 	},
-			// })
-
 			await userLogin(page, 'root', '123456')
 			await createBlog(page, blogTitle, blogAuthor, 'http://playwright.dev')
 
@@ -120,6 +112,19 @@ test.describe('Blog App', () => {
 			await page.getByRole('button', { name: 'log out' }).click()
 
 			await expect(page.getByRole('button', { name: 'login' })).toBeVisible()
+
+			await request.post('http://localhost:3001/api/users', {
+				data: { name: 'superuser2', username: 'root2', password: '123456' },
+			})
+
+			await userLogin(page, 'root2', '123456')
+
+			await expect(page.getByText('superuser2 logged in')).toBeVisible()
+
+			await expect(blog).toBeVisible()
+			await expect(
+				blog.getByRole('button', { name: 'remove' }),
+			).not.toBeVisible()
 		})
 	})
 })
