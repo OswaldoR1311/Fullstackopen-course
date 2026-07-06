@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link, Route, Routes, useNavigate } from 'react-router-dom'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
+import BlogList from './components/BlogList'
 import Footer from './components/Footer'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
@@ -18,6 +20,7 @@ const App = () => {
 	const [blogs, setBlogs] = useState([])
 
 	const blogRef = useRef()
+	const navigate = useNavigate()
 
 	const formLogin = () => (
 		<Togglable buttonLabel={'login'}>
@@ -54,6 +57,9 @@ const App = () => {
 			window.localStorage.setItem('loggedUser', JSON.stringify(user))
 			blogService.setToken(user.token)
 			setUser(user)
+			setUsername('')
+			setPassword('')
+			navigate('/')
 		} catch {
 			setNotification(
 				'wrong username or password',
@@ -69,6 +75,7 @@ const App = () => {
 			setUser(null)
 			setUsername('')
 			setPassword('')
+			navigate('/')
 		} else {
 			return null
 		}
@@ -102,14 +109,6 @@ const App = () => {
 	}
 
 	useEffect(() => {
-		if (user) {
-			blogService.getAll(user.token).then((responseBlogs) => {
-				setBlogs(responseBlogs)
-			})
-		}
-	}, [user])
-
-	useEffect(() => {
 		const loggedUser = window.localStorage.getItem('loggedUser')
 		if (loggedUser) {
 			const user = JSON.parse(loggedUser)
@@ -118,8 +117,15 @@ const App = () => {
 		}
 	}, [])
 
+	useEffect(() => {
+		if (user) {
+			blogService.getAll(user.token).then((responseBlogs) => {
+				setBlogs(responseBlogs)
+			})
+		}
+	}, [user])
+
 	async function removeBlog(id) {
-		console.log('Estamos removiendo el recurso', id)
 		const findBlog = blogs.find((blog) => blog.id === id)
 		if (!findBlog) {
 			setNotification(
@@ -127,7 +133,6 @@ const App = () => {
 				notificationStatusOptions.error,
 			)
 		}
-
 		try {
 			const answer = window.confirm(
 				`Remove blog ${findBlog.title} by ${findBlog.author}`,
@@ -149,8 +154,53 @@ const App = () => {
 
 	return (
 		<div>
-			<h2>Blogs</h2>
+			<div>
+				<Link to={'/'} style={{ padding: 5 }}>
+					blogs
+				</Link>
+				{!user && (
+					<Link to={'/login'} style={{ padding: 5 }}>
+						login
+					</Link>
+				)}
+				<br />
+				<br />
+				{user && (
+					<span style={{ padding: 5 }}>
+						<strong>{user.name}</strong> logged in
+						<button type="button" onClick={handleLogout}>
+							log out
+						</button>
+					</span>
+				)}
+			</div>
 			<Notification message={notificationMessage} status={notificationStatus} />
+			<Routes>
+				<Route
+					path="/login"
+					element={
+						<LoginForm
+							handleLogin={handleLogin}
+							setUsername={setUsername}
+							setPassword={setPassword}
+							username={username}
+							password={password}
+						/>
+					}
+				/>
+				<Route
+					path="/"
+					element={
+						<BlogList
+							blogs={sortedBlogsByLikes}
+							onUpdate={handleUpdate}
+							onRemove={removeBlog}
+						/>
+					}
+				/>
+			</Routes>
+			<Footer />
+			{/* <Notification message={notificationMessage} status={notificationStatus} />
 			{!user && formLogin()}
 			{user && (
 				<>
@@ -177,7 +227,7 @@ const App = () => {
 					)}
 				</>
 			)}
-			<Footer />
+			<Footer /> */}
 		</div>
 	)
 }
