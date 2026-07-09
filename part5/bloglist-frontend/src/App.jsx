@@ -83,11 +83,12 @@ const App = () => {
 
 	const handleAddBlog = async (blogObject) => {
 		try {
-			blogRef.current.toggleVisibility()
+			// blogRef.current.toggleVisibility()
 			const returnedBlog = await blogService.createBlog(blogObject)
 			const message = `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
 			setNotification(message, notificationStatusOptions.success)
 			setBlogs(blogs.concat(returnedBlog))
+			navigate('/')
 		} catch {
 			setNotification('blog not added', notificationStatusOptions.error)
 		}
@@ -164,19 +165,28 @@ const App = () => {
 						login
 					</Link>
 				)}
-				<br />
-				<br />
 				{user && (
-					<span style={{ padding: 5 }}>
-						<strong>{user.name}</strong> logged in
-						<button type="button" onClick={handleLogout}>
-							log out
-						</button>
-					</span>
+					<Link to={'/create'} style={{ padding: 5 }}>
+						new blog
+					</Link>
 				)}
+				<br />
+				<br />
 			</div>
+			{user && (
+				<span style={{ padding: 5 }}>
+					<strong>{user.name}</strong> logged in
+					<button type="button" onClick={handleLogout}>
+						log out
+					</button>
+				</span>
+			)}
 			<Notification message={notificationMessage} status={notificationStatus} />
 			<Routes>
+				<Route
+					path="/create"
+					element={<BlogForm createBlog={handleAddBlog} />}
+				/>
 				<Route
 					path="/login"
 					element={
@@ -202,7 +212,12 @@ const App = () => {
 				<Route
 					path="/blogs/:id"
 					element={
-						<Blog blogs={blogs} onUpdate={handleUpdate} onRemove={removeBlog} />
+						<Blog
+							blogs={blogs}
+							onUpdate={handleUpdate}
+							onRemove={removeBlog}
+							user={user}
+						/>
 					}
 				/>
 			</Routes>
