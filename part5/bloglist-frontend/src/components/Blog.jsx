@@ -1,8 +1,11 @@
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 
-const Blog = ({ blog, onUpdate, onRemove }) => {
+const Blog = ({ blogs, onUpdate, onRemove }) => {
 	const [visible, setVisible] = useState(false)
 
+	const id = useParams().id
+	const blog = blogs.find((blog) => blog.id === id)
 	return (
 		<div className="blog">
 			<div style={{ display: 'flex' }}>
@@ -26,12 +29,16 @@ const Blog = ({ blog, onUpdate, onRemove }) => {
 							type="button"
 							className="like"
 							style={{ flexShrink: 0, alignSelf: 'center', marginLeft: 8 }}
-							onClick={onUpdate}
+							onClick={() => onUpdate(blog.id)}
 						>
 							like
 						</button>
 					</div>
-					<button className="remove" type="button" onClick={onRemove}>
+					<button
+						className="remove"
+						type="button"
+						onClick={() => onRemove(blog.id)}
+					>
 						remove
 					</button>
 				</div>

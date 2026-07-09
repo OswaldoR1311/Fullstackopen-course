@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import blogService from '../services/blogs'
 import Blog from './Blog'
 import Notification from './Notification'
@@ -46,12 +47,9 @@ function BlogList({ blogs, onUpdate, onRemove }) {
 			) : (
 				<ul>
 					{blogs.map((blog) => (
-						<Blog
-							key={blog.id}
-							blog={blog}
-							onUpdate={() => onUpdate(blog.id)}
-							onRemove={() => onRemove(blog.id)}
-						/>
+						<li key={blog.id}>
+							<Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+						</li>
 					))}
 				</ul>
 			)}

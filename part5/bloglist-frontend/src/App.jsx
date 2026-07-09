@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, Route, Routes, useNavigate } from 'react-router-dom'
+import { Link, Route, Routes, useNavigate, useParams } from 'react-router-dom'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import BlogList from './components/BlogList'
@@ -144,6 +144,7 @@ const App = () => {
 					'Blog deleted succesfully',
 					notificationStatusOptions.success,
 				)
+				navigate('/')
 			}
 		} catch {
 			setNotification('an error ocurrs', notificationStatusOptions.error)
@@ -196,6 +197,12 @@ const App = () => {
 							onUpdate={handleUpdate}
 							onRemove={removeBlog}
 						/>
+					}
+				/>
+				<Route
+					path="/blogs/:id"
+					element={
+						<Blog blogs={blogs} onUpdate={handleUpdate} onRemove={removeBlog} />
 					}
 				/>
 			</Routes>
