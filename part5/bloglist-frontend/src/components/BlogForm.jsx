@@ -1,3 +1,4 @@
+import { Button, TextField } from '@mui/material'
 import { useState } from 'react'
 
 const BlogForm = ({ createBlog }) => {
@@ -24,40 +25,39 @@ const BlogForm = ({ createBlog }) => {
 			<h3>Create new blog</h3>
 			<form onSubmit={addBlog}>
 				<div>
-					<label>
-						title
-						<input
-							value={title}
-							type="text"
-							onChange={({ target }) => setTitle(target.value)}
-							placeholder="title"
-						/>
-					</label>
+					<TextField
+						variant="outlined"
+						size="small"
+						value={title}
+						onChange={({ target }) => setTitle(target.value)}
+						label="title"
+						sx={{ marginBottom: 2, width: '300px' }}
+					/>
 				</div>
 				<div>
-					<label>
-						author
-						<input
-							value={author}
-							type="text"
-							onChange={({ target }) => setAuthor(target.value)}
-							placeholder="author"
-						/>
-					</label>
+					<TextField
+						variant="outlined"
+						size="small"
+						value={author}
+						onChange={({ target }) => setAuthor(target.value)}
+						label="author"
+						sx={{ marginBottom: 2, width: '300px' }}
+					/>
 				</div>
 				<div>
-					<label>
-						url
-						<input
-							value={url}
-							type="url"
-							onChange={({ target }) => setUrl(target.value)}
-							placeholder="url"
-						/>
-					</label>
+					<TextField
+						variant="outlined"
+						size="small"
+						value={title}
+						onChange={({ target }) => setUrl(target.value)}
+						label="url"
+						sx={{ width: '300px' }}
+					/>
 				</div>
 				<br />
-				<button type="submit">create</button>
+				<Button variant="contained" size="small" type="submit">
+					create
+				</Button>
 			</form>
 		</div>
 	)
