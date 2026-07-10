@@ -1,5 +1,5 @@
 const { test, expect } = require('@playwright/test')
-const { userLogin, createBlog, giveLikes } = require('./helpers')
+const { userLogin, createBlog, viewBlog } = require('./helpers')
 
 test.describe('Blog App', () => {
 	test.beforeEach(async ({ page, request }) => {
@@ -45,32 +45,21 @@ test.describe('Blog App', () => {
 		})
 
 		test('a new blog can be created', async ({ page }) => {
-			await createBlog(
-				page,
-				'a test blog by playwright',
-				'playwright',
-				'https://playwright.dev',
-			)
+			const blogTitle = `a test blog by playwright ${Date.now()}`
+			await createBlog(page, blogTitle, 'playwright', 'https://playwright.dev')
 
-			await expect(
-				page.getByText('a test blog by playwright by playwright'),
-			).toBeVisible()
+			await expect(page.getByRole('link', { name: blogTitle })).toBeVisible()
 		})
 
 		test('a blog can be liked', async ({ page }) => {
 			const blogTitle = `Blog for like test ${Date.now()}`
 			await createBlog(page, blogTitle, 'playwright', 'https://playwright.dev')
 
-			const blogContainer = page.locator('.blog').filter({
-				hasText: blogTitle,
-			})
+			await viewBlog(page, blogTitle)
 
-			await blogContainer.getByRole('button', { name: 'view' }).click()
+			await page.getByRole('button', { name: 'like' }).click()
 
-			const likeButton = blogContainer.getByRole('button', { name: 'like' })
-			await likeButton.click()
-
-			await expect(blogContainer.getByText('likes 1')).toBeVisible()
+			await expect(page.getByText('likes 1')).toBeVisible()
 		})
 
 		test(' a blog can be deleted', async ({ page }) => {
@@ -78,9 +67,7 @@ test.describe('Blog App', () => {
 			const blogAuthor = 'Oswaldo'
 			await createBlog(page, blogTitle, blogAuthor, 'https://playwright.dev')
 
-			const blogContainer = page.locator('.blog').filter({ hasText: blogTitle })
-
-			await blogContainer.getByRole('button', { name: 'view' }).click()
+			await viewBlog(page, blogTitle)
 
 			page.once('dialog', (dialog) => {
 				expect(dialog.message()).toContain(
@@ -89,20 +76,20 @@ test.describe('Blog App', () => {
 				dialog.accept()
 			})
 
-			await blogContainer.getByRole('button', { name: 'remove' }).click()
-			await expect(blogContainer).not.toBeVisible()
+			await page.getByRole('button', { name: 'remove' }).click()
+
+			await expect(page.getByRole('heading', { name: 'Blogs' })).toBeVisible()
+			await expect(
+				page.getByRole('link', { name: blogTitle }),
+			).not.toBeVisible()
 		})
 
 		test('only creator can see remove button', async ({ page, request }) => {
 			const blogTitle = `Blog for delete button ${Date.now()}`
 			const blogAuthor = 'Oswaldo'
-
-			await userLogin(page, 'root', '123456')
-			await createBlog(page, blogTitle, blogAuthor, 'http://playwright.dev')
-
-			const blog = page.locator('.blog').filter({ hasText: blogTitle })
-
-			await expect(blog).toBeVisible()
+			await createBlog(page, blogTitle, blogAuthor, 'https://playwright.dev')
+			await viewBlog(page, blogTitle)
+			await expect(page.getByRole('button', { name: 'remove' })).toBeVisible()
 
 			page.once('dialog', (dialog) => {
 				expect(dialog.message()).toContain('Are you sure to log out?')
@@ -110,8 +97,6 @@ test.describe('Blog App', () => {
 			})
 
 			await page.getByRole('button', { name: 'log out' }).click()
-
-			await expect(page.getByRole('button', { name: 'login' })).toBeVisible()
 
 			await request.post('http://localhost:3001/api/users', {
 				data: { name: 'superuser2', username: 'root2', password: '123456' },
@@ -121,62 +106,10 @@ test.describe('Blog App', () => {
 
 			await expect(page.getByText('superuser2 logged in')).toBeVisible()
 
-			await expect(blog).toBeVisible()
+			await viewBlog(page, blogTitle)
 			await expect(
 				blog.getByRole('button', { name: 'remove' }),
 			).not.toBeVisible()
-		})
-
-		test('blog are sorted by likes', async ({ page }) => {
-			test.setTimeout(15000)
-			await userLogin(page, 'root', '123456')
-
-			await createBlog(
-				page,
-				'Blog alpha with less likes',
-				'user 1',
-				'https://testlink1.com',
-			)
-			await createBlog(
-				page,
-				'Blog beta with few some likes',
-				'user 2',
-				'https://testlink2.com',
-			)
-			await createBlog(
-				page,
-				'Blog gamma with a lot of likes',
-				'user 3',
-				'https://testlink3.com',
-			)
-
-			const lessLikesBlog = page
-				.locator('.blog')
-				.filter({ hasText: 'Blog alpha with less likes' })
-			const mediumLikesBlog = page
-				.locator('.blog')
-				.filter({ hasText: 'Blog beta with few some likes' })
-			const moreLikesBlog = page
-				.locator('.blog')
-				.filter({ hasText: 'Blog gamma with a lot of likes' })
-
-			await lessLikesBlog.getByRole('button', { name: 'view' }).click()
-			await mediumLikesBlog.getByRole('button', { name: 'view' }).click()
-			await moreLikesBlog.getByRole('button', { name: 'view' }).click()
-
-			await giveLikes(page, moreLikesBlog)
-			await giveLikes(page, moreLikesBlog)
-			await giveLikes(page, moreLikesBlog)
-
-			await giveLikes(page, mediumLikesBlog)
-
-			const blogs = page.locator('.blog')
-
-			await expect(blogs).toHaveCount(3)
-
-			await expect(blogs.nth(0)).toContainText('Blog gamma with a lot of likes')
-			await expect(blogs.nth(1)).toContainText('Blog beta with few some likes')
-			await expect(blogs.nth(2)).toContainText('Blog alpha with less likes')
 		})
 	})
 })

@@ -8,6 +8,8 @@ const Blog = ({ blogs, onUpdate, onRemove, user }) => {
 		return <p>Blog not founded...</p>
 	}
 
+	const isCreator = user && blog.user && user.username === blog.user.username
+
 	return (
 		<div className="blog">
 			<h2>
@@ -29,7 +31,7 @@ const Blog = ({ blogs, onUpdate, onRemove, user }) => {
 					)}
 
 					<div>
-						{user && (
+						{isCreator && (
 							<button type="button" onClick={() => onRemove(blog.id)}>
 								remove
 							</button>

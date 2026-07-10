@@ -16,9 +16,13 @@ async function createBlog(page, title, author, url) {
 	await page.getByRole('button', { name: 'create' }).click()
 }
 
-async function giveLikes(page, blog) {
-	await blog.getByRole('button', { name: 'like' }).click()
-	await page.waitForTimeout(500)
+// async function giveLikes(page, blog) {
+// 	await blog.getByRole('button', { name: 'like' }).click()
+// 	await page.waitForTimeout(500)
+// }
+
+async function viewBlog(page, title) {
+	await page.getByRole('link', { name: title }).click()
 }
 
-module.exports = { userLogin, createBlog, giveLikes }
+module.exports = { userLogin, createBlog, viewBlog }
