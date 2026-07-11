@@ -1,3 +1,11 @@
+import {
+	AppBar,
+	Box,
+	Button,
+	Container,
+	Toolbar,
+	Typography,
+} from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import { Link, Route, Routes, useNavigate, useParams } from 'react-router-dom'
 import Blog from './components/Blog'
@@ -15,8 +23,7 @@ const App = () => {
 	const [user, setUser] = useState(null)
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
-	const [notificationMessage, setNotificationMessage] = useState(null)
-	const [notificationStatus, setNotificationStatus] = useState(null)
+	const [notification, setNotification] = useState(null)
 	const [blogs, setBlogs] = useState([])
 
 	const blogRef = useRef()
@@ -40,13 +47,14 @@ const App = () => {
 		</Togglable>
 	)
 
-	const setNotification = (message, status) => {
-		setNotificationMessage(message)
-		setNotificationStatus(status)
+	function handleNotification(message, severity) {
+		setNotification({
+			text: message,
+			type: severity,
+		})
 
 		setTimeout(() => {
-			setNotificationMessage(null)
-			setNotificationStatus(null)
+			setNotification(null)
 		}, 5000)
 	}
 
@@ -61,10 +69,11 @@ const App = () => {
 			setPassword('')
 			navigate('/')
 		} catch {
-			setNotification(
-				'wrong username or password',
-				notificationStatusOptions.error,
-			)
+			// setNotification(
+			// 	'wrong username or password',
+			// 	notificationStatusOptions.error,
+			// )
+			handleNotification('wrong username or password', 'error')
 		}
 	}
 
@@ -86,11 +95,11 @@ const App = () => {
 			// blogRef.current.toggleVisibility()
 			const returnedBlog = await blogService.createBlog(blogObject)
 			const message = `a new blog ${returnedBlog.title} by ${returnedBlog.author} added`
-			setNotification(message, notificationStatusOptions.success)
+			handleNotification(message, 'success')
 			setBlogs(blogs.concat(returnedBlog))
 			navigate('/')
 		} catch {
-			setNotification('blog not added', notificationStatusOptions.error)
+			handleNotification('blog not added', 'error')
 		}
 	}
 
@@ -102,10 +111,7 @@ const App = () => {
 			const updatedBlog = await blogService.update(id, changedBlog)
 			setBlogs(blogs.map((blog) => (blog.id === id ? updatedBlog : blog)))
 		} catch {
-			setNotification(
-				'error handling like button',
-				notificationStatusOptions.error,
-			)
+			handleNotification('error handling like button', 'error')
 		}
 	}
 
@@ -129,10 +135,7 @@ const App = () => {
 	async function removeBlog(id) {
 		const findBlog = blogs.find((blog) => blog.id === id)
 		if (!findBlog) {
-			setNotification(
-				'the blog does not exist',
-				notificationStatusOptions.error,
-			)
+			handleNotification('the blog does not exist', 'error')
 		}
 		try {
 			const answer = window.confirm(
@@ -141,47 +144,49 @@ const App = () => {
 			if (answer) {
 				await blogService.removeBlog(id)
 				setBlogs(blogs.filter((blog) => blog.id !== id))
-				setNotification(
-					'Blog deleted succesfully',
-					notificationStatusOptions.success,
-				)
+				handleNotification('Blog deleted succesfully', 'success')
 				navigate('/')
 			}
 		} catch {
-			setNotification('an error ocurrs', notificationStatusOptions.error)
+			handleNotification('an error ocurrs', 'error')
 		}
 	}
 
 	const sortedBlogsByLikes = blogs.sort((a, b) => b.likes - a.likes)
 
+	const style = { '&:hover': { bgcolor: 'rgba(255, 255, 255, .3)' } }
+
 	return (
-		<div>
-			<div>
-				<Link to={'/'} style={{ padding: 5 }}>
-					blogs
-				</Link>
-				{!user && (
-					<Link to={'/login'} style={{ padding: 5 }}>
-						login
-					</Link>
-				)}
-				{user && (
-					<Link to={'/create'} style={{ padding: 5 }}>
+		<Container>
+			<AppBar position="static">
+				<Toolbar>
+					<Typography variant="h6" component={'div'} sx={{ flexGrow: 1 }}>
+						Blog App
+					</Typography>
+					<Button color="inherit" component={Link} to="/" sx={style}>
+						Home
+					</Button>
+					<Button component={Link} to="/create" color="inherit" sx={style}>
 						new blog
-					</Link>
-				)}
-				<br />
-				<br />
-			</div>
-			{user && (
-				<span style={{ padding: 5 }}>
-					<strong>{user.name}</strong> logged in
-					<button type="button" onClick={handleLogout}>
-						log out
-					</button>
-				</span>
-			)}
-			<Notification message={notificationMessage} status={notificationStatus} />
+					</Button>
+					{user ? (
+						<Button
+							component={Link}
+							onClick={handleLogout}
+							color="inherit"
+							sx={style}
+						>
+							log out
+						</Button>
+					) : (
+						<Button component={Link} to="/login" color="inherit">
+							login
+						</Button>
+					)}
+				</Toolbar>
+			</AppBar>
+
+			<Notification notification={notification} />
 			<Routes>
 				<Route
 					path="/create"
@@ -222,35 +227,7 @@ const App = () => {
 				/>
 			</Routes>
 			<Footer />
-			{/* <Notification message={notificationMessage} status={notificationStatus} />
-			{!user && formLogin()}
-			{user && (
-				<>
-					<p>
-						<strong>{user.name}</strong> Logged in
-						<button type="button" onClick={handleLogout}>
-							log out
-						</button>
-					</p>
-					<br />
-					{blogForm()}
-					<br />
-					{blogs.length === 0 ? (
-						<div>You dont have blogs yet</div>
-					) : (
-						sortedBlogsByLikes.map((b) => (
-							<Blog
-								key={b.id}
-								blog={b}
-								onUpdate={() => handleUpdate(b.id)}
-								onRemove={() => removeBlog(b.id)}
-							/>
-						))
-					)}
-				</>
-			)}
-			<Footer /> */}
-		</div>
+		</Container>
 	)
 }
 
