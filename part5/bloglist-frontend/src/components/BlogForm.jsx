@@ -48,7 +48,7 @@ const BlogForm = ({ createBlog }) => {
 					<TextField
 						variant="outlined"
 						size="small"
-						value={title}
+						value={url}
 						onChange={({ target }) => setUrl(target.value)}
 						label="url"
 						sx={{ width: '300px' }}
