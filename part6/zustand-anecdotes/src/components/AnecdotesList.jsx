@@ -1,8 +1,8 @@
-import { useAnecdoteActions, useAnecdotes } from '../store'
+import { useAnecdoteActions, useAnecdotes } from '../anecdoteStore'
 
 function AnecdotesList() {
 	const anecdotes = useAnecdotes()
-	const { vote } = useAnecdoteActions()
+	const { vote, deleteAnecdote } = useAnecdoteActions()
 
 	const sortedAnecdotes = anecdotes.toSorted((a, b) => b.votes - a.votes)
 
@@ -14,6 +14,11 @@ function AnecdotesList() {
 					<div>
 						has {anecdote.votes}
 						<button onClick={() => vote(anecdote.id)}>vote</button>
+						{anecdote.votes === 0 ? (
+							<button onClick={() => deleteAnecdote(anecdote.id)}>
+								delete
+							</button>
+						) : null}
 					</div>
 				</div>
 			))}

@@ -1,22 +1,18 @@
-import { useAnecdoteActions } from '../store'
+import { useAnecdoteActions } from '../anecdoteStore'
 
 function AnecdoteForm() {
-	const { add } = useAnecdoteActions()
+	const { addAnecdote } = useAnecdoteActions()
 
-	function generateRandomID() {
-		return Number(Math.random() * 1000000)
-	}
-
-	function addAnecdote(event) {
+	function handleAddAnecdote(event) {
 		event.preventDefault()
 		const content = event.target.anecdote.value
-		const newAnecdote = { id: generateRandomID(), content, votes: 0 }
-		add(newAnecdote)
+		addAnecdote(content)
+		event.target.reset()
 	}
 	return (
 		<div>
 			<h2>create new</h2>
-			<form onSubmit={addAnecdote}>
+			<form onSubmit={handleAddAnecdote}>
 				<div>
 					<input name="anecdote" />
 				</div>
