@@ -6,7 +6,7 @@ const useAnecdoteStore = create((set, get) => ({
 	// anecdotes: anecdotesAtStart.map(asObject),
 	anecdotes: [],
 	filter: '',
-	notification: null,
+	// notification: null,
 	actions: {
 		// vote: (id) =>
 		// 	set((state) => ({
@@ -61,3 +61,5 @@ export const useAnecdoteActions = () =>
 
 export const useAnecdoteNotification = () =>
 	useAnecdoteStore((state) => state.notification)
+
+export default useAnecdoteStore
