@@ -85,3 +85,31 @@ describe('useAnecdoteActions', () => {
 		expect(anecdotesResult.current[0].votes).toBe(2)
 	})
 })
+
+describe('useAnecdotes filtering', () => {
+	const anecdotesList = [
+		{id: 1, content: 'A', votes: 5},
+		{id: 2, content: 'B', votes: 3}
+	]
+
+	beforeEach(() => {
+		useAnecdoteStore.setState({anecdotes: anecdotesList, filter: ''})
+	})
+
+	it('returns all anecdotes with no filter', () => {
+		const {result} = renderHook(() => useAnecdotes())
+		expect(result.current).toHaveLength(2)
+	})
+
+	it('returns anecdotes matching the filter', () => {
+		useAnecdoteStore.setState({anecdotes: anecdotesList, filter: 'A'})
+		const {result} = renderHook(() => useAnecdoteStore())
+		expect(result.current).toEqual([anecdotesList[0]])
+	})
+
+	it('returns empty array when no anecdote matches the filter', () => {
+		useAnecdoteStore.setState({anecdotes: anecdotesList, filter: 'zzz'})
+		const {result} = renderHook(() => useAnecdotes())
+		expect(result.current).toEqual([])
+	})
+})
