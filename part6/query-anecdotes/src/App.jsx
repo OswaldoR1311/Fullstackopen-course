@@ -1,32 +1,13 @@
-import { useQuery } from '@tanstack/react-query'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
-import { getAnecdotes } from './services/anecdote'
+import { useAnecdotes } from './hooks/useAnecdotes'
 
 const App = () => {
-	const result = useQuery({
-		queryKey: ['anecdotes'],
-		queryFn: getAnecdotes,
-		retry: 1,
-	})
+	const { anecdotes, isPending, updateVote: upVote } = useAnecdotes()
 
-	const handleVote = (anecdote) => {
-		console.log('vote')
-	}
-
-	// const anecdotes = [
-	// 	{
-	// 		content: 'If it hurts, do it more often',
-	// 		id: '47145',
-	// 		votes: 0,
-	// 	},
-	// ]
-
-	if (result.isPending) {
+	if (isPending) {
 		return <div>loading data...</div>
 	}
-
-	const anecdotes = result.data
 
 	return (
 		<div>
@@ -40,7 +21,7 @@ const App = () => {
 					<div>{anecdote.content}</div>
 					<div>
 						has {anecdote.votes}
-						<button onClick={() => handleVote(anecdote)}>vote</button>
+						<button onClick={() => upVote(anecdote)}>vote</button>
 					</div>
 				</div>
 			))}
