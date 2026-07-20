@@ -4,9 +4,11 @@ import {
 	getAnecdotes,
 	voteAnecdote,
 } from '../services/anecdote'
+import useNotification from './useNotification'
 
 export function useAnecdotes() {
 	const queryClient = useQueryClient()
+	const { handleNotification } = useNotification()
 
 	const result = useQuery({
 		queryKey: ['anecdotes'],
@@ -20,6 +22,12 @@ export function useAnecdotes() {
 		onSuccess: (newAnecdote) => {
 			const anecdotes = queryClient.getQueryData(['anecdotes'])
 			queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote))
+		},
+		onError: () => {
+			handleNotification('anecdote too short')
+			setTimeout(() => {
+				handleNotification(null)
+			})
 		},
 	})
 
