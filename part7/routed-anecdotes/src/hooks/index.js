@@ -1,11 +1,40 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import anecdotesService from '../services/anecdotes'
 
 export function useField(type) {
-    const [value, setValue] = useState('')
+	const [value, setValue] = useState('')
 
-    function onChange(event) {
-        setValue(event.target.value)
-    }
+	function onChange(event) {
+		setValue(event.target.value)
+	}
 
-    return { type, value, onChange}
+	function reset() {
+		setValue('')
+	}
+
+	return { type, value, onChange, reset }
+}
+
+export function useAnecdotes() {
+	const [anecdotes, setAnecdotes] = useState([])
+
+	useEffect(() => {
+		anecdotesService.getAll().then((anecdotesList) => {
+			setAnecdotes(anecdotesList)
+		})
+	}, [])
+
+	function addAnecdote(newAnecdote) {
+		anecdotesService.createNew(newAnecdote).then((newA) => {
+			setAnecdotes(anecdotes.concat(newA))
+		})
+	}
+
+	function deleteAnecdoteF(id) {
+		anecdotesService.deleteAnecdote(id).then(() => {
+			setAnecdotes(anecdotes.filter((anecdote) => anecdote.id !== id))
+		})
+	}
+
+	return { anecdotes, setAnecdotes, addAnecdote, deleteAnecdoteF }
 }

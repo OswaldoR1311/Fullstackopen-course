@@ -19,14 +19,20 @@ const CreateNew = ({ addAnecdote }) => {
 			info: info.value,
 			votes: 0,
 		})
-
 		navigate('/')
+	}
+
+	function handleReset(event) {
+		event.preventDefault()
+		content.reset()
+		author.reset()
+		info.reset()
 	}
 
 	return (
 		<div>
 			<h2>create a new anecdote</h2>
-			<form onSubmit={handleSubmit}>
+			<form onSubmit={handleSubmit} onReset={handleReset}>
 				<div>
 					content
 					<input
@@ -55,6 +61,9 @@ const CreateNew = ({ addAnecdote }) => {
 					/>
 				</div>
 				<button type="submit">create</button>
+				<button type="button" onClick={handleReset}>
+					reset
+				</button>
 			</form>
 		</div>
 	)
