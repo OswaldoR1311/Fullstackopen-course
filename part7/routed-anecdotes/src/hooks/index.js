@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import anecdotesService from '../services/anecdotes'
 
 export function useField(type) {
@@ -32,7 +32,9 @@ export function useAnecdotes() {
 
 	function deleteAnecdoteF(id) {
 		anecdotesService.deleteAnecdote(id).then(() => {
-			setAnecdotes(anecdotes.filter((anecdote) => anecdote.id !== id))
+			setAnecdotes((prevAnecdotes) =>
+				prevAnecdotes.filter((anecdote) => anecdote.id !== id),
+			)
 		})
 	}
 
