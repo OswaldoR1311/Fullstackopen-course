@@ -1,0 +1,170 @@
+import crypto from "crypto";
+import { GraphQLError } from "graphql";
+import Author from "./models/author.js";
+import Book from "./models/book.js";
+
+// const authors = [
+// 	{
+// 		name: "Robert Martin",
+// 		id: "afa51ab0-344d-11e9-a414-719c6709cf3e",
+// 		born: 1952,
+// 	},
+// 	{
+// 		name: "Martin Fowler",
+// 		id: "afa5b6f0-344d-11e9-a414-719c6709cf3e",
+// 		born: 1963,
+// 	},
+// 	{
+// 		name: "Fyodor Dostoevsky",
+// 		id: "afa5b6f1-344d-11e9-a414-719c6709cf3e",
+// 		born: 1821,
+// 	},
+// 	{
+// 		name: "Joshua Kerievsky", // birthyear not known
+// 		id: "afa5b6f2-344d-11e9-a414-719c6709cf3e",
+// 	},
+// 	{
+// 		name: "Sandi Metz", // birthyear not known
+// 		id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
+// 	},
+// ];
+
+// const books = [
+// 	{
+// 		title: "Clean Code",
+// 		published: 2008,
+// 		author: "Robert Martin",
+// 		id: "afa5b6f4-344d-11e9-a414-719c6709cf3e",
+// 		genres: ["refactoring"],
+// 	},
+// 	{
+// 		title: "Agile software development",
+// 		published: 2002,
+// 		author: "Robert Martin",
+// 		id: "afa5b6f5-344d-11e9-a414-719c6709cf3e",
+// 		genres: ["agile", "patterns", "design"],
+// 	},
+// 	{
+// 		title: "Refactoring, edition 2",
+// 		published: 2018,
+// 		author: "Martin Fowler",
+// 		id: "afa5de00-344d-11e9-a414-719c6709cf3e",
+// 		genres: ["refactoring"],
+// 	},
+// 	{
+// 		title: "Refactoring to patterns",
+// 		published: 2008,
+// 		author: "Joshua Kerievsky",
+// 		id: "afa5de01-344d-11e9-a414-719c6709cf3e",
+// 		genres: ["refactoring", "patterns"],
+// 	},
+// 	{
+// 		title: "Practical Object-Oriented Design, An Agile Primer Using Ruby",
+// 		published: 2012,
+// 		author: "Sandi Metz",
+// 		id: "afa5de02-344d-11e9-a414-719c6709cf3e",
+// 		genres: ["refactoring", "design"],
+// 	},
+// 	{
+// 		title: "Crime and punishment",
+// 		published: 1866,
+// 		author: "Fyodor Dostoevsky",
+// 		id: "afa5de03-344d-11e9-a414-719c6709cf3e",
+// 		genres: ["classic", "crime"],
+// 	},
+// 	{
+// 		title: "Demons",
+// 		published: 1872,
+// 		author: "Fyodor Dostoevsky",
+// 		id: "afa5de04-344d-11e9-a414-719c6709cf3e",
+// 		genres: ["classic", "revolution"],
+// 	},
+// ];
+
+const resolvers = {
+	Query: {
+		booksCount: async () => Book.collection.countDocuments(),
+		authorsCount: async () => Author.collection.countDocuments(),
+		// allBooks: (root, args) => {
+		// 	return books.filter((book) => book.author === args.author);
+		// }, //Primera modificación
+		allBooks: async (root, args) => {
+			const filter = {};
+			if (args.author) {
+				const author = await Author.findOne({ name: args.author });
+				if (!author) {
+					return [];
+				}
+
+				filter.author = author._id;
+			}
+
+			if (args.genre) {
+				filter.genres = args.genre;
+			}
+
+			const books = await Book.find(filter).populate("author");
+
+			return books;
+		},
+		allAuthors: async () => Author.find({}),
+	},
+
+	Author: {
+		bookCount: (parent) => {
+			const booksOfAuthor = books.filter((book) => book.author === parent.name);
+			return booksOfAuthor.length;
+		},
+	},
+
+	Mutation: {
+		addBook: async (root, args) => {
+			let author = await Author.findOne({ name: args.author });
+
+			if (!author) {
+				author = new Author({ name: args.author });
+				try {
+					await author.save();
+				} catch (error) {
+					throw new GraphQLError("Error saving author", {
+						extensions: {
+							code: "BAD_USER_INPUT",
+							invalidArgs: args.author,
+							error,
+						},
+					});
+				}
+			}
+
+			const book = new Book({ ...args, author: author._id });
+			try {
+				await book.save();
+			} catch (error) {
+				throw new GraphQLError("Error saving book", {
+					extensions: {
+						code: "BAD_USER_INPUT",
+						invalidArgs: args.title,
+						error,
+					},
+				});
+			}
+
+			return book.populate("author");
+		},
+		editAuthor: (root, args) => {
+			const findAuthor = authors.find((auth) => auth.name === args.name);
+			if (!findAuthor) {
+				throw new GraphQLError(`Author ${args.name} not finded`, {
+					extensions: {
+						code: "BAD_USER_INPUT",
+						argumentName: "name",
+					},
+				});
+			}
+			findAuthor.born = args.setBornTo;
+			return findAuthor;
+		},
+	},
+};
+
+export default resolvers;
