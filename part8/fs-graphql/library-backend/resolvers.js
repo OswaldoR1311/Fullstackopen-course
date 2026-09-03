@@ -1,7 +1,12 @@
 import crypto from "crypto";
+import { configDotenv } from "dotenv";
 import { GraphQLError } from "graphql";
+import jwt from "jsonwebtoken";
 import Author from "./models/author.js";
 import Book from "./models/book.js";
+import User from "./models/user.js";
+
+configDotenv();
 
 // const authors = [
 // 	{
@@ -108,12 +113,17 @@ const resolvers = {
 			return books;
 		},
 		allAuthors: async () => Author.find({}),
+		me: (root, args, context) => {
+			console.log("Me estoy ejecutando");
+			console.log(args);
+			console.log(context);
+			return context.currentUser;
+		},
 	},
 
 	Author: {
-		bookCount: (parent) => {
-			const booksOfAuthor = books.filter((book) => book.author === parent.name);
-			return booksOfAuthor.length;
+		bookCount: async (parent) => {
+			return Book.countDocuments({ author: parent._id });
 		},
 	},
 
@@ -163,6 +173,38 @@ const resolvers = {
 			}
 			findAuthor.born = args.setBornTo;
 			return findAuthor;
+		},
+
+		createUser: async (root, args) => {
+			const user = new User({ username: args.username });
+			return user.save().catch((error) => {
+				throw new GraphQLError(`Creating the user failed: ${error.message}`, {
+					extensions: {
+						code: "BAD_USER_INPUT",
+						invalidArgs: args.username,
+						error,
+					},
+				});
+			});
+		},
+
+		login: async (root, args) => {
+			const user = await User.findOne({ username: args.username });
+
+			if (!user || args.password !== "secret") {
+				throw new GraphQLError(`wrong credentials`, {
+					extensions: {
+						code: "BAD_USER_INPUT",
+					},
+				});
+			}
+
+			const userForToken = {
+				username: user.username,
+				id: user._id,
+			};
+
+			return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
 		},
 	},
 };
