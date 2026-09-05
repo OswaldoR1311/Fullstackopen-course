@@ -8,83 +8,15 @@ import User from "./models/user.js";
 
 configDotenv();
 
-// const authors = [
-// 	{
-// 		name: "Robert Martin",
-// 		id: "afa51ab0-344d-11e9-a414-719c6709cf3e",
-// 		born: 1952,
-// 	},
-// 	{
-// 		name: "Martin Fowler",
-// 		id: "afa5b6f0-344d-11e9-a414-719c6709cf3e",
-// 		born: 1963,
-// 	},
-// 	{
-// 		name: "Fyodor Dostoevsky",
-// 		id: "afa5b6f1-344d-11e9-a414-719c6709cf3e",
-// 		born: 1821,
-// 	},
-// 	{
-// 		name: "Joshua Kerievsky", // birthyear not known
-// 		id: "afa5b6f2-344d-11e9-a414-719c6709cf3e",
-// 	},
-// 	{
-// 		name: "Sandi Metz", // birthyear not known
-// 		id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
-// 	},
-// ];
-
-// const books = [
-// 	{
-// 		title: "Clean Code",
-// 		published: 2008,
-// 		author: "Robert Martin",
-// 		id: "afa5b6f4-344d-11e9-a414-719c6709cf3e",
-// 		genres: ["refactoring"],
-// 	},
-// 	{
-// 		title: "Agile software development",
-// 		published: 2002,
-// 		author: "Robert Martin",
-// 		id: "afa5b6f5-344d-11e9-a414-719c6709cf3e",
-// 		genres: ["agile", "patterns", "design"],
-// 	},
-// 	{
-// 		title: "Refactoring, edition 2",
-// 		published: 2018,
-// 		author: "Martin Fowler",
-// 		id: "afa5de00-344d-11e9-a414-719c6709cf3e",
-// 		genres: ["refactoring"],
-// 	},
-// 	{
-// 		title: "Refactoring to patterns",
-// 		published: 2008,
-// 		author: "Joshua Kerievsky",
-// 		id: "afa5de01-344d-11e9-a414-719c6709cf3e",
-// 		genres: ["refactoring", "patterns"],
-// 	},
-// 	{
-// 		title: "Practical Object-Oriented Design, An Agile Primer Using Ruby",
-// 		published: 2012,
-// 		author: "Sandi Metz",
-// 		id: "afa5de02-344d-11e9-a414-719c6709cf3e",
-// 		genres: ["refactoring", "design"],
-// 	},
-// 	{
-// 		title: "Crime and punishment",
-// 		published: 1866,
-// 		author: "Fyodor Dostoevsky",
-// 		id: "afa5de03-344d-11e9-a414-719c6709cf3e",
-// 		genres: ["classic", "crime"],
-// 	},
-// 	{
-// 		title: "Demons",
-// 		published: 1872,
-// 		author: "Fyodor Dostoevsky",
-// 		id: "afa5de04-344d-11e9-a414-719c6709cf3e",
-// 		genres: ["classic", "revolution"],
-// 	},
-// ];
+function requireAuth(context) {
+	if (!context.currentUser) {
+		throw new GraphQLError("Authentication required", {
+			extensions: {
+				code: "UNAUTHENTICATED",
+			},
+		});
+	}
+}
 
 const resolvers = {
 	Query: {
@@ -128,7 +60,8 @@ const resolvers = {
 	},
 
 	Mutation: {
-		addBook: async (root, args) => {
+		addBook: async (root, args, context) => {
+			requireAuth(context);
 			let author = await Author.findOne({ name: args.author });
 
 			if (!author) {
@@ -161,22 +94,27 @@ const resolvers = {
 
 			return book.populate("author");
 		},
-		editAuthor: (root, args) => {
-			const findAuthor = authors.find((auth) => auth.name === args.name);
+		editAuthor: async (root, args, context) => {
+			requireAuth(context);
+			const findAuthor = await Author.findOne({ name: args.name });
 			if (!findAuthor) {
-				throw new GraphQLError(`Author ${args.name} not finded`, {
-					extensions: {
-						code: "BAD_USER_INPUT",
-						argumentName: "name",
-					},
-				});
+				// throw new GraphQLError(`Author ${args.name} not finded`, {
+				// 	extensions: {
+				// 		code: "BAD_USER_INPUT",
+				// 		argumentName: "name",
+				// 	},
+				// });
+				return null;
 			}
 			findAuthor.born = args.setBornTo;
-			return findAuthor;
+			return findAuthor.save();
 		},
 
 		createUser: async (root, args) => {
-			const user = new User({ username: args.username });
+			const user = new User({
+				username: args.username,
+				favoriteGenre: args.favoriteGenre,
+			});
 			return user.save().catch((error) => {
 				throw new GraphQLError(`Creating the user failed: ${error.message}`, {
 					extensions: {
@@ -205,6 +143,18 @@ const resolvers = {
 			};
 
 			return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
+		},
+
+		_resetDatabase: async () => {
+			if (process.env.NODE_ENV !== "test") {
+				throw new GraphQLError("_resetDatabase is only avaliable in test mode");
+			}
+
+			await Author.deleteMany({});
+			await Book.deleteMany({});
+			await User.deleteMany({});
+
+			return true;
 		},
 	},
 };

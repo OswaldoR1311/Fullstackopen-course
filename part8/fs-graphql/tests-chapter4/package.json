@@ -1,11 +1,15 @@
 {
-  "name": "library-backend-tests",
-  "version": "1.0.0",
-  "description": "Automated tests for Full Stack Open part8 library-backend",
-  "scripts": {
-    "test": "node --test"
-  },
-  "dependencies": {
-    "mongodb-memory-server": "^10.4.0"
-  }
+	"name": "library-backend-tests",
+	"version": "1.0.0",
+	"description": "Automated tests for Full Stack Open part8 library-backend",
+	"type": "module",
+	"scripts": {
+		"test": "node --test"
+	},
+	"dependencies": {
+		"@apollo/server": "^5.5.1",
+		"graphql": "^16.14.2",
+		"mongodb-memory-server": "^10.4.3",
+		"mongoose": "^9.9.5"
+	}
 }

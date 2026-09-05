@@ -39,6 +39,7 @@ const typeDefs = /* GraphQL */ `
     editAuthor(name: String!, setBornTo: Int): Author!
     createUser(username: String!): User
     login(username: String! password: String!): Token
+    _resetDatabase: Boolean
   }
 `;
 

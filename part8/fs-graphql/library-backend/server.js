@@ -9,12 +9,16 @@ import typeDefs from "./schema.js";
 configDotenv();
 
 async function getUserFromAuthHeader(auth) {
-	if (!auth || !auth.startsWith("Bearer ")) {
+	if (!auth || !auth.startsWith("Bearer ")) return null;
+
+	try {
+		const token = auth.substring(7);
+		const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+		return await User.findById(decodedToken.id);
+	} catch (error) {
 		return null;
 	}
-
-	const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET);
-	return User.findById(decodedToken.id);
 }
 
 function startServer(port) {
@@ -23,8 +27,9 @@ function startServer(port) {
 	startStandaloneServer(server, {
 		listen: { port: 4000 },
 		context: async ({ req }) => {
-			const auth = req.headers.authorization;
-			const currentUser = await getUserFromAuthHeader(auth);
+			const currentUser = await getUserFromAuthHeader(
+				req.headers.authorization,
+			);
 			return { currentUser };
 		},
 	}).then(({ url }) => {
