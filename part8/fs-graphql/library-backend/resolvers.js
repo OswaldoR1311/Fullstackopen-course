@@ -20,8 +20,8 @@ function requireAuth(context) {
 
 const resolvers = {
 	Query: {
-		booksCount: async () => Book.collection.countDocuments(),
-		authorsCount: async () => Author.collection.countDocuments(),
+		bookCount: async () => Book.collection.countDocuments(),
+		authorCount: async () => Author.collection.countDocuments(),
 		// allBooks: (root, args) => {
 		// 	return books.filter((book) => book.author === args.author);
 		// }, //Primera modificación
