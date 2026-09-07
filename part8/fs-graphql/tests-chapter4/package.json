@@ -9,7 +9,6 @@
 	"dependencies": {
 		"@apollo/server": "^5.5.1",
 		"graphql": "^16.14.2",
-		"mongodb-memory-server": "^10.4.3",
-		"mongoose": "^9.9.5"
+		"mongodb-memory-server": "^10.4.3"  
 	}
 }

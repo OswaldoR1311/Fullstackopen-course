@@ -3,20 +3,17 @@
 // } = require("../library-backend/node_modules/@apollo/server");
 // const { MongoMemoryServer } = require("mongodb-memory-server");
 // const mongoose = require("../library-backend/node_modules/mongoose");
-
-// const { default: typeDefs } = require("../library-backend/schema");
-
 import { ApolloServer } from "@apollo/server";
 import { MongoMemoryServer } from "mongodb-memory-server";
-// const typeDefs = require('../library-backend/schema')
-// const resolvers = require('../library-backend/resolvers')
-// const Author = require('../library-backend/models/author')
-// const Book = require('../library-backend/models/book')
-// const User = require('../library-backend/models/user')
-import mongoose from "mongoose";
 import Author from "../library-backend/models/author.js";
 import Book from "../library-backend/models/book.js";
 import User from "../library-backend/models/user.js";
+// const typeDefs = require("../library-backend/schema");
+// const resolvers = require("../library-backend/resolvers");
+// const Author = require("../library-backend/models/author");
+// const Book = require("../library-backend/models/book");
+// const User = require("../library-backend/models/user");
+import mongoose from "../library-backend/mongooseInstance.js";
 import resolvers from "../library-backend/resolvers.js";
 import typeDefs from "../library-backend/schema.js";
 

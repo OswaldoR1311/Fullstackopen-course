@@ -1,5 +1,5 @@
-// const { describe, test, before, after } = require('node:test')
-// const assert = require('node:assert')
+// const { describe, test, before, after } = require("node:test");
+// const assert = require("node:assert");
 
 import assert from "node:assert";
 import { after, before, describe, test } from "node:test";
