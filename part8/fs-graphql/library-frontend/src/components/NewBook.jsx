@@ -2,7 +2,11 @@ import { useMutation } from "@apollo/client/react";
 import { ADD_BOOK } from "../mutations";
 import { useState } from "react";
 
-const NewBook = () => {
+const NewBook = ({ show, setPage }) => {
+	if (!show) {
+		return null;
+	}
+
 	const [title, setTitle] = useState("");
 	const [author, setAuthor] = useState("");
 	const [published, setPublished] = useState("");
@@ -31,6 +35,7 @@ const NewBook = () => {
 		setAuthor("");
 		setGenres([]);
 		setGenre("");
+		setPage("books");
 	};
 
 	const addGenre = () => {

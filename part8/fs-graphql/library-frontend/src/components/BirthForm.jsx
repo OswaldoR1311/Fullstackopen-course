@@ -3,7 +3,9 @@ import { useState } from "react";
 import { EDIT_AUTHOR_BIRTH } from "../mutations";
 import { ALL_AUTHORS } from "../queries";
 
-function BirthForm() {
+function BirthForm({ show }) {
+	if (!show) return null;
+
 	const [name, setName] = useState("");
 	const [born, setBorn] = useState("");
 

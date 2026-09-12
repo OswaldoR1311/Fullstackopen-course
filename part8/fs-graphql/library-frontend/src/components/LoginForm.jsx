@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import { LOGIN } from "../mutations";
 
-function LoginForm({ setToken, setErrorMsg }) {
+function LoginForm({ setToken, setErrorMsg, show, setPage }) {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 
@@ -11,6 +11,7 @@ function LoginForm({ setToken, setErrorMsg }) {
 			const token = login.value;
 			setToken(token);
 			window.localStorage.setItem("user-token", token);
+			setPage("authors");
 		},
 		onError: (error) => setErrorMsg(error.message),
 	});
@@ -18,7 +19,11 @@ function LoginForm({ setToken, setErrorMsg }) {
 	function submit(event) {
 		event.preventDefault();
 		login({ variables: { username, password } });
+		setUsername("");
+		setPassword("");
 	}
+
+	if (!show) return null;
 
 	return (
 		<div>

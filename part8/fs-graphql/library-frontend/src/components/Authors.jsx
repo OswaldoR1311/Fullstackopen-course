@@ -2,8 +2,10 @@ import { useQuery } from "@apollo/client/react";
 import { ALL_AUTHORS } from "../queries";
 import BirthForm from "./BirthForm";
 
-const Authors = () => {
+const Authors = ({ show }) => {
 	const { loading, error, data } = useQuery(ALL_AUTHORS);
+
+	if (!show) return null;
 
 	if (loading) {
 		return <p>Loading authors...</p>;
@@ -19,7 +21,7 @@ const Authors = () => {
 						<th>born</th>
 						<th>books</th>
 					</tr>
-					{data?.allAuthors?.map((a) => (
+					{data?.allAuthors.map((a) => (
 						<tr key={a.id}>
 							<td>{a.name}</td>
 							<td>{a.born}</td>
