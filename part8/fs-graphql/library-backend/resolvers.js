@@ -46,9 +46,6 @@ const resolvers = {
 		},
 		allAuthors: async () => Author.find({}),
 		me: (root, args, context) => {
-			console.log("Me estoy ejecutando");
-			console.log(args);
-			console.log(context);
 			return context.currentUser;
 		},
 	},

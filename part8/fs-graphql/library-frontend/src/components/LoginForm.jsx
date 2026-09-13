@@ -1,10 +1,11 @@
-import { useState } from "react";
 import { useMutation } from "@apollo/client/react";
+import { useState } from "react";
 import { LOGIN } from "../mutations";
 
 function LoginForm({ setToken, setErrorMsg, show, setPage }) {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
+	const [errMsg, setErrMsg] = useState(null);
 
 	const [login] = useMutation(LOGIN, {
 		onCompleted: ({ login }) => {
@@ -13,7 +14,10 @@ function LoginForm({ setToken, setErrorMsg, show, setPage }) {
 			window.localStorage.setItem("user-token", token);
 			setPage("authors");
 		},
-		onError: (error) => setErrorMsg(error.message),
+		onError: (error) => {
+			setErrMsg(`login failed ${error.message}`);
+			setTimeout(() => setErrMsg(null), 5000);
+		},
 	});
 
 	function submit(event) {
@@ -27,6 +31,7 @@ function LoginForm({ setToken, setErrorMsg, show, setPage }) {
 
 	return (
 		<div>
+			{errMsg && <div>{errMsg}</div>}
 			<form onSubmit={submit}>
 				<label>
 					username

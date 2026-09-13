@@ -4,13 +4,12 @@ import { EDIT_AUTHOR_BIRTH } from "../mutations";
 import { ALL_AUTHORS } from "../queries";
 
 function BirthForm({ show }) {
-	if (!show) return null;
-
 	const [name, setName] = useState("");
 	const [born, setBorn] = useState("");
 
 	const { data } = useQuery(ALL_AUTHORS);
 	const [editAuthorFn] = useMutation(EDIT_AUTHOR_BIRTH);
+	if (!show) return null;
 
 	function submit(event) {
 		event.preventDefault();
@@ -38,7 +37,7 @@ function BirthForm({ show }) {
 						value={name}
 						onChange={({ target }) => setName(target.value)}
 					/> */}
-					<select onChange={({ target }) => setName(target.value)}>
+					<select name="name" onChange={({ target }) => setName(target.value)}>
 						<option value={""} disabled>
 							Select an author
 						</option>

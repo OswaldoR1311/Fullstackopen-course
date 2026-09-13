@@ -1,9 +1,11 @@
 import { useApolloClient } from "@apollo/client/react";
 import { useState } from "react";
 import Authors from "./components/Authors";
+import BirthForm from "./components/BirthForm";
 import Books from "./components/Books";
-import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
+import NewBook from "./components/NewBook";
+import Recommendations from "./components/Recommendations";
 
 const App = () => {
 	const [page, setPage] = useState("authors");
@@ -25,36 +27,65 @@ const App = () => {
 		client.resetStore();
 	}
 
+	const cursorStyle = { cursor: "pointer" };
+
 	return (
 		<div>
 			<div>
-				<button type="button" onClick={() => setPage("authors")}>
+				<button
+					style={cursorStyle}
+					type="button"
+					onClick={() => setPage("authors")}
+				>
 					authors
 				</button>
-				<button type="button" onClick={() => setPage("books")}>
+				<button
+					style={cursorStyle}
+					type="button"
+					onClick={() => setPage("books")}
+				>
 					books
 				</button>
 				{token && (
-					<button type="button" onClick={() => setPage("add")}>
+					<button
+						style={cursorStyle}
+						type="button"
+						onClick={() => setPage("add")}
+					>
 						add book
 					</button>
 				)}
+				{token && (
+					<button
+						style={cursorStyle}
+						type="button"
+						onClick={() => setPage("recommended")}
+					>
+						recommend
+					</button>
+				)}
 				{!token ? (
-					<button type="button" onClick={() => setPage("login")}>
+					<button
+						style={cursorStyle}
+						type="button"
+						onClick={() => setPage("login")}
+					>
 						login
 					</button>
 				) : (
-					<button type="button" onClick={logout}>
+					<button style={cursorStyle} type="button" onClick={logout}>
 						logout
 					</button>
 				)}
 			</div>
 
-			<Authors show={page === "authors"} />
+			<Authors token={token} show={page === "authors"} />
 
 			<Books show={page === "books"} />
 
 			<NewBook setPage={setPage} show={page === "add" && token} />
+
+			<Recommendations show={page === "recommended" && token} />
 
 			<LoginForm
 				setToken={setToken}
@@ -62,11 +93,6 @@ const App = () => {
 				setPage={setPage}
 				show={page === "login" && !token}
 			/>
-
-			{/* <Authors />
-			<Books />
-			<NewBook />
-			<LoginForm setToken={setToken} setErrorMsg={notify} logout={logout} /> */}
 		</div>
 	);
 };

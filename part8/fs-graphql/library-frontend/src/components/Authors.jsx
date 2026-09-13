@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client/react";
 import { ALL_AUTHORS } from "../queries";
 import BirthForm from "./BirthForm";
 
-const Authors = ({ show }) => {
+const Authors = ({ show, token }) => {
 	const { loading, error, data } = useQuery(ALL_AUTHORS);
 
 	if (!show) return null;
@@ -30,7 +30,7 @@ const Authors = ({ show }) => {
 					))}
 				</tbody>
 			</table>
-			<BirthForm />
+			{token && <BirthForm show={show} />}
 		</div>
 	);
 };

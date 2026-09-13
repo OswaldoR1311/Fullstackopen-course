@@ -3,8 +3,10 @@ import { useState } from "react";
 import { ALL_BOOKS } from "../queries";
 
 const Books = ({ show }) => {
-	const [filter, setFilter] = useState("all genres");
-	const { data, loading, error } = useQuery(ALL_BOOKS);
+	const [filter, setFilter] = useState(null);
+	const { data, loading } = useQuery(ALL_BOOKS, {
+		variables: { genre: filter },
+	});
 
 	if (!show) {
 		return null;
@@ -22,33 +24,24 @@ const Books = ({ show }) => {
 	);
 	const genreList = [...genres];
 
-	const filteredBookList =
-		filter === "all genres"
-			? data.allBooks
-			: data.allBooks.filter((book) => book.genres.includes(filter));
-
-	function setGenreCategory(genre) {
-		setFilter(genre);
-	}
-
 	return (
 		<div>
 			<h2>books</h2>
 			<p>
 				in genre{" "}
 				<strong>
-					<em>{filter}</em>
+					<em>{filter ?? "all genres"}</em>
 				</strong>
 			</p>
 			<table>
 				<tbody>
 					<tr>
-						<th></th>
+						<th>title</th>
 						<th>author</th>
 						<th>published</th>
 					</tr>
-					{filteredBookList.map((a) => (
-						<tr key={a.author.id}>
+					{data.allBooks?.map((a) => (
+						<tr key={a.title}>
 							<td>{a.title}</td>
 							<td>{a.author?.name}</td>
 							<td>{a.published}</td>
@@ -59,7 +52,7 @@ const Books = ({ show }) => {
 			<div style={{ marginTop: 20, display: "flex", gap: 4 }}>
 				{genreList.map((genre) => (
 					<button
-						onClick={() => setGenreCategory(genre)}
+						onClick={() => setFilter(genre)}
 						style={{ cursor: "pointer" }}
 						type="button"
 						key={genre}
@@ -68,7 +61,7 @@ const Books = ({ show }) => {
 					</button>
 				))}
 				<button
-					onClick={() => setGenreCategory("all genres")}
+					onClick={() => setFilter(null)}
 					style={{ cursor: "pointer" }}
 					type="button"
 				>
