@@ -1,16 +1,18 @@
 {
-  "name": "healthapp",
-  "version": "1.0.0",
-  "description": "App of healthapp",
-  "license": "ISC",
-  "author": "Oswaldo Rodríguez",
-  "type": "module",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "calculateBMI": "tsc && node bmiCalculator.ts"
-  },
-  "devDependencies": {
-    "typescript": "^7.0.2"
-  }
+	"name": "healthapp",
+	"version": "1.0.0",
+	"description": "App of healthapp",
+	"license": "ISC",
+	"author": "Oswaldo Rodríguez",
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"calculateBMI": "tsc && node bmiCalculator.ts",
+		"calculateExercises": "tsc && node exerciseCalculator.ts"
+	},
+	"devDependencies": {
+		"@types/node": "^26.5.1",
+		"typescript": "^7.0.2"
+	}
 }
