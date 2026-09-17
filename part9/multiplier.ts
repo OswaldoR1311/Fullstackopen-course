@@ -1,8 +1,5 @@
-
-type Operation = 'multiply' | 'add' | 'divide'
-type Result = string | number
-
-
+// type Operation = 'multiply' | 'add' | 'divide'
+export type Result = string 
 
 interface MultiplyValues {
     value1: number;

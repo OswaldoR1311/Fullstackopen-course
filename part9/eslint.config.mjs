@@ -12,7 +12,7 @@ export default tseslint.config(
                         "patientor/",
                         "patientor-tests/",
                         "patientor-api-tests/",
-                ],
+                ],  
 	},
 	{
 		files: ["**/*.ts"],

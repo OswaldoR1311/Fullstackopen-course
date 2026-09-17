@@ -1,16 +1,15 @@
-import express from 'express'
-import { multiply } from './multiplier.ts'
+import express, { Request, Response } from 'express'
+import { multiply, type Result } from './multiplier.ts'
 
 const app = express()
 
-
-
 app.use(express.json())
 
-app.post('/calculate', (req, res) => {
+app.post('/calculate', (req: Request, res: Response) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { value1, value2, message } = req.body
 
-    const result = multiply(value1, value2, message)
+    const result = multiply(value1, value2, message as Result)
     return res.send({ result })
 })
 
@@ -25,6 +24,8 @@ app.listen(PORT, () => {
 })
 
 const x: any = 1
+
+console.log('Hola mundo')
 
 
 
