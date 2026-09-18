@@ -1,6 +1,6 @@
 import express, { type Request, type Response } from "express";
 import { calculateBMI } from "./bmiCalculator.ts";
-import { calculateExercises, Result } from "./exerciseCalculator.ts";
+import { calculateExercises, type Result } from "./exerciseCalculator.ts";
 
 const app = express();
 
