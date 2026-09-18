@@ -1,5 +1,5 @@
 //Code for this exercise
-interface Result {
+export interface Result {
 	periodLength: number;
 	trainingDays: number;
 	success: boolean;

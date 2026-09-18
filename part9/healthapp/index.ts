@@ -1,6 +1,6 @@
 import express, { type Request, type Response } from "express";
 import { calculateBMI } from "./bmiCalculator.ts";
-import { calculateExercises } from "./exerciseCalculator.ts";
+import { calculateExercises, Result } from "./exerciseCalculator.ts";
 
 const app = express();
 
@@ -29,8 +29,8 @@ app.get("/bmi", (req: Request, res: Response) => {
 });
 
 
-app.get("/exercises", (req: Request, res: Response) => {
-	const { daily_exercises, target } = req.query;
+app.post("/exercises", (req: Request, res: Response) => {
+	const { daily_exercises, target } = req.body;
 
 	if (daily_exercises === undefined || target === undefined) return res.status(400).json({ error: 'parameters missing' });
 
@@ -41,7 +41,7 @@ app.get("/exercises", (req: Request, res: Response) => {
 
 	if (Number.isNaN(parsedTarget) || parsedExercises.some(n => Number.isNaN(n))) return res.status(400).json({ error: 'malformatted parameters' });
 
-	const result = calculateExercises(parsedExercises, parsedTarget);
+	const result: Result = calculateExercises(parsedExercises, parsedTarget);
 
 	return res.status(200).json(result);
 });
