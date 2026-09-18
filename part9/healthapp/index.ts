@@ -6,6 +6,11 @@ const app = express();
 
 app.use(express.json());
 
+interface ExerciseInput {
+    daily_exercises: unknown,
+    target: unknown
+}
+
 app.get("/hello", (_req, res) => {
 	res.send("Hello Full Stack!");
 });
@@ -30,7 +35,7 @@ app.get("/bmi", (req: Request, res: Response) => {
 
 
 app.post("/exercises", (req: Request, res: Response) => {
-	const { daily_exercises, target } = req.body;
+	const { daily_exercises, target } = req.body as ExerciseInput;
 
 	if (daily_exercises === undefined || target === undefined) return res.status(400).json({ error: 'parameters missing' });
 
