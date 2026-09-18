@@ -33,7 +33,7 @@ function parseArguments2(args: Array<string>) {
 	}
 }
 
-function calculateExercises(dailyHours: Array<number>, target: number): Result {
+export function calculateExercises(dailyHours: Array<number>, target: number): Result {
 	const periodLength = dailyHours.length;
 	const trainingDays = [...dailyHours.filter((day) => day !== 0)].length;
 	const average =
