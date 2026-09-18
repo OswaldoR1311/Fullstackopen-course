@@ -74,8 +74,8 @@ try {
 	const { dailyHours, target } = parseArguments2(process.argv);
 	console.log(calculateExercises(dailyHours, target));
 } catch (error: unknown) {
-	let errorMsg = "An error ocurr ";
+	// const errorMsg = "An error ocurr ";
 	if (error instanceof Error) {
-		errorMsg += `Error: ${error.message}`;
+		console.log(`Error: ${error.message}`);
 	}
 }
