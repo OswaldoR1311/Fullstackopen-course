@@ -1,5 +1,6 @@
-import express from "express";
+import express, { type Request, type Response } from "express";
 import { calculateBMI } from "./bmiCalculator.ts";
+import { calculateExercises } from "./exerciseCalculator.ts";
 
 const app = express();
 
@@ -9,29 +10,43 @@ app.get("/hello", (_req, res) => {
 	res.send("Hello Full Stack!");
 });
 
-app.get("/bmi", (req, res) => {
+app.get("/bmi", (req: Request, res: Response) => {
 	const height = Number(req.query.height);
 	const weight = Number(req.query.weight);
-	const bmi = calculateBMI(height, weight);
+
 
 	if (!height || !weight || Number.isNaN(height) || Number.isNaN(weight)) {
 		return res.status(400).json({ error: "malformatted parameters" });
 	}
 
-	return res.json({
+	const bmi = calculateBMI(height, weight);
+
+	return res.status(200).json({
 		weight,
 		height,
 		bmi,
 	});
 });
 
-app.get("/exercises", (req, res) => {
-    const daily_exercises = (req.query.daily_exercises);
-    console.log(daily_exercises);
-    return res.send('Ejercicios');
+
+app.get("/exercises", (req: Request, res: Response) => {
+	const { daily_exercises, target } = req.query;
+
+	if (daily_exercises === undefined || target === undefined) return res.status(400).json({ error: 'parameters missing' });
+
+	if (!Array.isArray(daily_exercises)) return res.status(400).json({ error: 'malformatted parameters' });
+
+	const parsedExercises = daily_exercises.map(n => Number(n));
+	const parsedTarget = Number(target);
+
+	if (Number.isNaN(parsedTarget) || parsedExercises.some(n => Number.isNaN(n))) return res.status(400).json({ error: 'malformatted parameters' });
+
+	const result = calculateExercises(parsedExercises, parsedTarget);
+
+	return res.status(200).json(result);
 });
 
-const PORT = 3003;
+const PORT = 3000;
 
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
