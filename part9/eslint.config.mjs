@@ -30,6 +30,7 @@ export default tseslint.config(
 		"@stylistic": stylistic,
 	},
 	rules: {
+        "@typescript-eslint/consistent-type-imports": "error",
 		"@typescript-eslint/no-explicit-any": "error",
 		"@stylistic/semi": ["error", "never"],
     	"@stylistic/indent": ["error", 4],
