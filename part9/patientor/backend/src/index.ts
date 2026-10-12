@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(cors());
 
 app.get("/api/ping", (_req, res) => {
-    res.send("Testing");
+    res.send("pong");
 });
 
 app.use("/api/diagnoses", diagnoseRouter);
