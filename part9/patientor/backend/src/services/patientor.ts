@@ -12,7 +12,7 @@ const getPatientSensitiveData = (): sensitivePatientInfo[] => {
     }));
 };
 
-const addPatientEntry = (data: NewPatient ) => {
+const addPatientEntry = (data: NewPatient) => {
   const newPatient = {
     id: uuid(),
     ...data
