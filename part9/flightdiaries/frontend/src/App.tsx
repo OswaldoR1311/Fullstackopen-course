@@ -8,6 +8,14 @@ interface Diary {
   visibility: string
 }
 
+interface ValidationError {
+  code: string
+  message: string
+  path: string[]
+  values: string[]
+  pattern?: string
+}
+
 type NewDiary = Omit<Diary, 'id'>
 
 const baseUrl = 'http://localhost:3000/api/diaries'
@@ -17,6 +25,7 @@ const App = () => {
   const [newDate, setNewDate] = useState('')
   const [newWeather, setNewWeather] = useState('')
   const [newVisibility, setNewVisibility] = useState('')
+  const [notificationMsg, setNotificationMsg] = useState('')
 
   useEffect(() => {
     axios.get<Diary[]>(baseUrl).then(response =>
@@ -32,15 +41,35 @@ const App = () => {
       visibility: newVisibility,
     }).then((response) => {
       setDiaries(diaries.concat(response.data))
+      setNewDate('')
+      setNewVisibility('')
+      setNewWeather('')
+    }).catch((error) => {
+      if (axios.isAxiosError(error)) {
+        if (error.response?.data && Array.isArray(error.response.data.error)) {
+          error.response.data.error.forEach((e: ValidationError) => {
+            if (e.path.includes('weather')) {
+              setNotificationMsg(`Error: invalid weather: ${newWeather}`)
+            } else if (e.path.includes('visibility')) {
+              setNotificationMsg(`Error: invalid visibility: ${newVisibility}`)
+            } else if (e.path.includes('date')) {
+              setNotificationMsg(`Error: invalid date: ${newDate}`)
+            }
+          })
+          setTimeout(() => {
+            setNotificationMsg('')
+          }, 5000)
+        }
+      } else {
+        console.error(error)
+      }
     })
-    setNewDate('')
-    setNewWeather('')
-    setNewVisibility('')
   }
 
   return (
     <div>
       <h2>Add new Diary</h2>
+      {notificationMsg && <p style={{ color: 'red' }}>{notificationMsg}</p>}
       <form onSubmit={addDiary}>
         <label>
           Date:
