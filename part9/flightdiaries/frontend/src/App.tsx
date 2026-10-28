@@ -66,6 +66,9 @@ const App = () => {
     })
   }
 
+  const weatherValues = ['sunny', 'cloudy', 'rainy', 'windy']
+  const visibilityValues = ['poor', 'great', 'good', 'ok']
+
   return (
     <div>
       <h2>Add new Diary</h2>
@@ -74,18 +77,32 @@ const App = () => {
         <label>
           Date:
           {' '}
-          <input type="text" value={newDate} onChange={event => setNewDate(event.target.value)} />
+          <input type="date" name="date" value={newDate} onChange={event => setNewDate(event.target.value)} />
         </label>
+        <br />
         <label>
           Weather:
           {' '}
-          <input type="text" value={newWeather} onChange={event => setNewWeather(event.target.value)} />
+          {weatherValues.map(value => (
+            <label>
+              {value}
+              <input type="radio" name="weather" value={value} onChange={event => setNewWeather(event.target.value)} />
+            </label>
+          ),
+          )}
         </label>
+        <br />
         <label>
           Visibility:
           {' '}
-          <input type="text" value={newVisibility} onChange={event => setNewVisibility(event.target.value)} />
+          {visibilityValues.map(value => (
+            <label>
+              {value}
+              <input type="radio" name="visibility" value={value} onChange={event => setNewVisibility(event.target.value)} />
+            </label>
+          ))}
         </label>
+        <br />
         <button type="submit">add</button>
       </form>
       <ul>
