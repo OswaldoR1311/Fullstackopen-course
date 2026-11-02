@@ -8,20 +8,21 @@ import { Patient } from "./types";
 
 import patientService from "./services/patients";
 import PatientListPage from "./components/PatientListPage";
+import PatientDetail from './components/PatientListPage/PatientIndividual';
 
 const App = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
 
   useEffect(() => {
-    void axios.get<void>(`${apiBaseUrl}/ping`);
+    axios.get<void>(`${apiBaseUrl}/ping`);
 
     const fetchPatientList = async () => {
       const patients = await patientService.getAll();
       setPatients(patients);
     };
-    void fetchPatientList();
+    fetchPatientList();
   }, []);
-  
+
   return (
     <div className="App">
       <Router>
@@ -35,6 +36,7 @@ const App = () => {
           <Divider sx={{ marginY: 2 }} />
           <Routes>
             <Route path="/" element={<PatientListPage patients={patients} setPatients={setPatients} />} />
+            <Route path="/patients/:id" element={<PatientDetail patients={patients} />} />
           </Routes>
         </Container>
       </Router>
