@@ -3,12 +3,14 @@ import { patientsData } from "../../data/entries.ts";
 import { v1 as uuid } from "uuid"; 
 
 const getPatientSensitiveData = (): sensitivePatientInfo[] => {
-    return patientsData.map(({id, gender, name, dateOfBirth, occupation}) => ({
+    return patientsData.map(({id, gender, name, dateOfBirth, occupation, ssn, entries}) => ({
         id,
         name,
         dateOfBirth,
+        ssn,
         gender,
-        occupation
+        occupation,
+        entries
     }));
 };
 

@@ -27,11 +27,24 @@ const PatientDetail = ({ patients }: PatientDetailProps): React.JSX.Element => {
                     <Typography component={'p'}>
                         occupation: {findedPatient.occupation}
                     </Typography>
-                    <Typography component={'p'}>
-                        date of birth: {findedPatient.dateOfBirth}
-                    </Typography>
                 </Typography>}
             </Box>
+
+            {findedPatient?.entries.length === 0 ? null : <Box>
+                <Typography variant='h5'>entries</Typography>
+                {findedPatient?.entries.map(entry => (
+                    <Typography component={'p'}>
+                        {entry.date} {entry.description}
+                        <ul>
+                            {entry.diagnosisCodes?.map(code => (
+                                <li key={code}>
+                                    {code}
+                                </li>
+                            ))}
+                        </ul>
+                    </Typography>
+                ))}
+            </Box>}
         </div>
     );
 };
