@@ -1,12 +1,16 @@
 import express from 'express';
 import type { Request, Response } from 'express';
-import type { Patient, NewPatient, sensitivePatientInfo } from '../../types.ts';
+import type { Patient, NewPatient, sensitivePatientInfo, NewPatientEntry, Entry } from '../../types.ts';
 import patientor from '../services/patientor.ts';
-import { parseReqBody, errorMiddleware } from '../middleware.ts';
+import { parseEntryBody, parseReqBody, errorMiddleware } from '../middleware.ts';
 
 interface PatientParams {
   id: string
 }
+
+type PatientEntryParams = {
+  id: string
+};
 
 interface Error {
   error: string
@@ -47,7 +51,10 @@ patientRouter.post('/', parseReqBody, (req: Request<unknown, unknown, NewPatient
   res.json(addedEntry);
 });
 
-
+// patientRouter.post("/:id/entries", parseEntryBody, (req: Request<PatientEntryParams, unknown, NewPatientEntry>, res: Response<Entry>) => {
+//   const addedMedicalEntry = patientor.addMedicalPatientEntry(req.body, req.params.id);
+//   res.status(201).json(addedMedicalEntry);
+// });
 
 patientRouter.use(errorMiddleware);
 

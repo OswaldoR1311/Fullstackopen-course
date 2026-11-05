@@ -1,7 +1,17 @@
 import type {Request, Response, NextFunction} from 'express';
 import { PatientSchema } from '../types.ts';
+import { EntrySchema } from '../types.ts';
 import {z} from 'zod';
 
+
+const parseEntryBody = (req: Request, _res: Response, next: NextFunction) => {
+  try {
+    EntrySchema.parse(req.body);
+    next();
+  } catch(error: unknown) {
+    next(error);
+  }
+};
 
 const parseReqBody = (req: Request, _res: Response, next: NextFunction) => {
   try {
@@ -20,4 +30,4 @@ const errorMiddleware = (error: unknown, _req: Request, res: Response, next: Nex
   }
 };
 
-export {parseReqBody, errorMiddleware};
+export {parseEntryBody, parseReqBody, errorMiddleware};

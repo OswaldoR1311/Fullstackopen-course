@@ -1,4 +1,4 @@
-import type { sensitivePatientInfo, NewPatient, Patient } from "../../types.ts";
+import type { sensitivePatientInfo, NewPatient, Patient, NewPatientEntry } from "../../types.ts";
 import { patientsData } from "../../data/entries.ts";
 import { v1 as uuid } from "uuid"; 
 
@@ -23,9 +23,20 @@ const addPatientEntry = (data: NewPatient) => {
   return newPatient;
 };
 
+const addMedicalPatientEntry = (data: NewPatientEntry, patientId: string) => {
+    const patient = patientsData.find(patient => patient.id === patientId);
+   if(!patient) throw new Error('Patient does not exist');
+   const newMedicalEntry = {
+    id: uuid(),
+    ...data
+   };
+   patient.entries.push(newMedicalEntry);
+   return newMedicalEntry;
+};
+
 const getOnePatientInformation = (id: string): Patient | undefined => {
     console.log('me estoy ejecutando?');
     return patientsData.find(patient => patient.id === id);
 };
 
-export default {getPatientSensitiveData, addPatientEntry, getOnePatientInformation};
+export default { getPatientSensitiveData, addPatientEntry, getOnePatientInformation, addMedicalPatientEntry };
