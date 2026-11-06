@@ -8,8 +8,7 @@ import MaleIcon from '@mui/icons-material/Male';
 import { Transgender } from '@mui/icons-material';
 import Button from '@mui/material/Button';
 import type { Gender } from '../../types';
-import {TextField} from '@mui/material';
-
+import EntryForm from './EntryForm';
 interface PatientDetailProps {
     patients: Patient[]
     diagnosis: Diagnosis[]
@@ -82,21 +81,7 @@ const PatientDetail = ({ patients, diagnosis }: PatientDetailProps): React.JSX.E
               New entry
             </Button>
             </Box>
-  
-            <Box component={'form'} sx={{padding: '16px', borderWidth: '2px', borderStyle: 'dotted'}}>
-                <Typography variant='h6' gutterBottom>New HealthCheck Entry</Typography>
-                <Box component={'div'} sx={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
-                  <TextField required label='Date'/>
-                  <TextField required label='Description'/>
-                  <TextField required label='Specialist'/>
-                  <TextField required label='Health Check Rating (0-3)'/>
-                  <TextField required label='Diagnosis Codes (comma-separated)'/>
-                </Box>
-               <Box component={'div'} sx={{display: 'flex', gap: '8px', marginTop: '12px'}}>
-                <Button variant='contained'>Add</Button>
-                <Button variant='outlined'>Cancel</Button>
-               </Box>
-            </Box>
+            <EntryForm />
         </div>
     );
 };
