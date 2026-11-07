@@ -5,11 +5,10 @@ import EntryDetails from './EntryDetails';
 import type { Diagnosis, Patient } from '../../types';
 import FemaleIcon from '@mui/icons-material/Female';
 import MaleIcon from '@mui/icons-material/Male';
+import { Transgender } from '@mui/icons-material';
 import Button from '@mui/material/Button';
-import TransgenderIcon from '@mui/icons-material/Transgender';
 import type { Gender } from '../../types';
-import TextField from '@mui/material/TextField';
-
+import EntryForm from './EntryForm';
 interface PatientDetailProps {
     patients: Patient[]
     diagnosis: Diagnosis[]
@@ -21,33 +20,33 @@ const PatientDetail = ({ patients, diagnosis }: PatientDetailProps): React.JSX.E
     const findedPatient = patients.find(p => p.id === id);
 
     const handleGender = (value: Gender | undefined) => {
-        let gender: string | React.JSX.Element = '';
+        let holder: string | React.JSX.Element = '';
 
         switch (value) {
             case "male":
-                gender = <MaleIcon />;
+                holder = <MaleIcon />;
                 break;
             case "female":
-                gender = <FemaleIcon />;
+                holder = <FemaleIcon />;
                 break;
             case "other":
-                gender = <TransgenderIcon />;
+                holder = <Transgender />;
                 break;
             default:
-                return <p>Gender does not exist</p>;
+                return '';
         }
 
-        return gender;
+        return holder;
     };
 
     const genderValue = handleGender(findedPatient?.gender);
 
-    const greeting = () => console.log('Estamos saludando a ver si funciona');
+    const greeting = () => console.log('This is a greeting');
 
     return (
         <div>
             <Box>
-                {findedPatient && <Typography variant='h4' gutterBottom>
+                {findedPatient && <Typography variant='h5' gutterBottom>
                     {findedPatient.name} {genderValue}
                     <Typography component={'p'}>
                         ssn: {findedPatient.ssn}
@@ -55,19 +54,13 @@ const PatientDetail = ({ patients, diagnosis }: PatientDetailProps): React.JSX.E
                     <Typography component={'p'}>
                         occupation: {findedPatient.occupation}
                     </Typography>
-                    <Typography component={'p'}>
-                        date of birth: {findedPatient.dateOfBirth}
-                    </Typography>
+                    <Typography component={'p'}>Date of birth: {findedPatient?.dateOfBirth}</Typography>
                 </Typography>}
                 {findedPatient?.entries.length === 0 ? <Button onClick={greeting} variant='contained'>new entry</Button> : null}
-
-                <Box component={'form'}>
-                    <TextField required label='Required' defaultValue={'HelloWorld'} />
-                </Box>
             </Box>
 
             {findedPatient?.entries.length === 0 ? null : <Box>
-                <Typography variant='h5'>entries</Typography>
+                <Typography variant='h6'>entries</Typography>
                 {findedPatient?.entries.map(entry => (
                     <Typography component={'div'}>
                         <EntryDetails entry={entry} />
@@ -83,10 +76,13 @@ const PatientDetail = ({ patients, diagnosis }: PatientDetailProps): React.JSX.E
                         </ul>
                     </Typography>
                 ))}
-                <Button variant='contained'>
+            </Box>}
+            <Box component={'div'} sx={{ marginBottom: '16px' }}>
+                <Button onClick={greeting} variant='contained'>
                     New entry
                 </Button>
-            </Box>}
+            </Box>
+            <EntryForm />
         </div>
     );
 };
