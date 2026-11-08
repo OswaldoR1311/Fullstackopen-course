@@ -9,6 +9,7 @@ import { Transgender } from '@mui/icons-material';
 import Button from '@mui/material/Button';
 import type { Gender } from '../../types';
 import EntryForm from './EntryForm';
+
 interface PatientDetailProps {
     patients: Patient[]
     diagnosis: Diagnosis[]
@@ -56,7 +57,6 @@ const PatientDetail = ({ patients, diagnosis }: PatientDetailProps): React.JSX.E
                     </Typography>
                     <Typography component={'p'}>Date of birth: {findedPatient?.dateOfBirth}</Typography>
                 </Typography>}
-                {findedPatient?.entries.length === 0 ? <Button onClick={greeting} variant='contained'>new entry</Button> : null}
             </Box>
 
             {findedPatient?.entries.length === 0 ? null : <Box>
