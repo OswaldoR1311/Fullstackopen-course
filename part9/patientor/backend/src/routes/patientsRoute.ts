@@ -46,7 +46,7 @@ patientRouter.get('/:id', (req: Request<PatientParams>, res: Response<Patient | 
  }
 });
 
-patientRouter.post('/', parseReqBody, (req: Request<unknown, unknown, NewPatient>, res: Response<Patient>) => {
+patientRouter.post('/', parseReqBody, (req: Request<unknown, unknown, NewPatient>, res: Response<NewPatient>) => {
   const addedEntry = patientor.addPatientEntry(req.body);
   res.json(addedEntry);
 });
