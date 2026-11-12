@@ -35,7 +35,7 @@ const HealthCareEntry = ({ entry }: HealthCareEntryProps) => {
               <br />
               <i>{entry.description}</i>
               <br />
-              <Favorite sx={color} />
+              <Favorite sx={{ color }} />
               <br />
               diagnose by
               {' '}

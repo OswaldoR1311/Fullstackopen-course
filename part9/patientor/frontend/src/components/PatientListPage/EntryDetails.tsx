@@ -7,7 +7,8 @@ interface EntryProps {
   entry: Entry
 }
 
-const assertNever = (value: never): never => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const assertNever = (_value: never): never => {
   throw new Error('Unhandled case')
 }
 
