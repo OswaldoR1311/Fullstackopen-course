@@ -51,10 +51,10 @@ patientRouter.post('/', parseReqBody, (req: Request<unknown, unknown, NewPatient
   res.json(addedEntry);
 });
 
-// patientRouter.post("/:id/entries", parseEntryBody, (req: Request<PatientEntryParams, unknown, NewPatientEntry>, res: Response<Entry>) => {
-//   const addedMedicalEntry = patientor.addMedicalPatientEntry(req.body, req.params.id);
-//   res.status(201).json(addedMedicalEntry);
-// });
+patientRouter.post("/:id/entries", parseEntryBody, (req: Request<PatientEntryParams, unknown, NewPatientEntry>, res: Response<Entry>) => {
+  const addedMedicalEntry = patientor.addMedicalPatientEntry(req.body, req.params.id);
+  res.status(201).json(addedMedicalEntry);
+});
 
 patientRouter.use(errorMiddleware);
 

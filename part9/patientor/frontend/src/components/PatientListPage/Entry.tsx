@@ -1,20 +1,20 @@
-import React from "react";
+import React from 'react'
 
 interface EntryProps {
   children: React.ReactNode
 }
 
 const divStyle = {
-    borderStyle: 'solid',
-    borderWidth: '2px'
-};
+  borderStyle: 'solid',
+  borderWidth: '2px',
+}
 
-const BaseEntry = ({children}: EntryProps) => {
+const BaseEntry = ({ children }: EntryProps) => {
   return (
     <div style={divStyle}>
       {children}
     </div>
-  );
-};
+  )
+}
 
-export default BaseEntry;
+export default BaseEntry

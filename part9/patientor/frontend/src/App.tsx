@@ -1,43 +1,43 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
-import { Button, Divider, Container, Typography } from '@mui/material';
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom'
+import { Button, Divider, Container, Typography } from '@mui/material'
 
-import { apiBaseUrl } from "./constants";
-import { Patient, Diagnosis } from "./types";
+import { apiBaseUrl } from './constants'
+import { Patient, Diagnosis } from './types'
 
-import patientService from "./services/patients";
-import PatientListPage from "./components/PatientListPage";
-import PatientDetail from './components/PatientListPage/PatientIndividual';
+import patientService from './services/patients'
+import PatientListPage from './components/PatientListPage'
+import PatientDetail from './components/PatientListPage/PatientIndividual'
 
 const App = () => {
-  const [patients, setPatients] = useState<Patient[]>([]);
-  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
+  const [patients, setPatients] = useState<Patient[]>([])
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([])
 
   useEffect(() => {
-    axios.get<void>(`${apiBaseUrl}/ping`);
+    axios.get<void>(`${apiBaseUrl}/ping`)
 
     const fetchPatientList = async () => {
-      const patients = await patientService.getAll();
-      setPatients(patients);
-    };
-    fetchPatientList();
-  }, []);
+      const patients = await patientService.getAll()
+      setPatients(patients)
+    }
+    fetchPatientList()
+  }, [])
 
   useEffect(() => {
     const fetchDiagnosesFromBackend = async () => {
-      const diagnoses = await patientService.getDiagnoses();
-      setDiagnoses(diagnoses);
-    };
+      const diagnoses = await patientService.getDiagnoses()
+      setDiagnoses(diagnoses)
+    }
 
-    fetchDiagnosesFromBackend();
-  }, []);
+    fetchDiagnosesFromBackend()
+  }, [])
 
   return (
     <div className="App">
       <Router>
         <Container>
-          <Typography variant="h3" sx={{ marginBottom: "0.5em" }}>
+          <Typography variant="h3" sx={{ marginBottom: '0.5em' }}>
             Patientor
           </Typography>
           <Button component={Link} to="/" variant="contained" color="primary">
@@ -51,7 +51,7 @@ const App = () => {
         </Container>
       </Router>
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App

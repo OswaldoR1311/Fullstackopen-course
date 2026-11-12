@@ -1,58 +1,58 @@
-import { useState, SyntheticEvent } from "react";
+import { useState, SyntheticEvent } from 'react'
 
-import {  TextField, InputLabel, MenuItem, Select, Grid, Button, SelectChangeEvent } from '@mui/material';
+import { TextField, InputLabel, MenuItem, Select, Grid, Button, SelectChangeEvent } from '@mui/material'
 
-import { PatientFormValues, Gender } from "../../types";
+import { PatientFormValues, Gender } from '../../types'
 
 interface Props {
-  onCancel: () => void;
-  onSubmit: (values: PatientFormValues) => void;
+  onCancel: () => void
+  onSubmit: (values: PatientFormValues) => void
 }
 
-interface GenderOption{
-  value: Gender;
-  label: string;
+interface GenderOption {
+  value: Gender
+  label: string
 }
 
 const genderOptions: GenderOption[] = Object.values(Gender).map(v => ({
-  value: v, label: v.toString()
-}));
+  value: v, label: v.toString(),
+}))
 
 const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
-  const [name, setName] = useState('');
-  const [occupation, setOccupation] = useState('');
-  const [ssn, setSsn] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [gender, setGender] = useState(Gender.Other);
+  const [name, setName] = useState('')
+  const [occupation, setOccupation] = useState('')
+  const [ssn, setSsn] = useState('')
+  const [dateOfBirth, setDateOfBirth] = useState('')
+  const [gender, setGender] = useState(Gender.Other)
 
   const onGenderChange = (event: SelectChangeEvent<string>) => {
-    event.preventDefault();
-    if ( typeof event.target.value === "string") {
-      const value = event.target.value;
-      const gender = Object.values(Gender).find(g => g.toString() === value);
+    event.preventDefault()
+    if (typeof event.target.value === 'string') {
+      const value = event.target.value
+      const gender = Object.values(Gender).find(g => g.toString() === value)
       if (gender) {
-        setGender(gender);
+        setGender(gender)
       }
     }
-  };
+  }
 
   const addPatient = (event: SyntheticEvent) => {
-    event.preventDefault();
+    event.preventDefault()
     onSubmit({
       name,
       occupation,
       ssn,
       dateOfBirth,
-      gender
-    });
-  };
+      gender,
+    })
+  }
 
   return (
     <div>
       <form onSubmit={addPatient}>
         <TextField
           label="Name"
-          fullWidth 
+          fullWidth
           value={name}
           onChange={({ target }) => setName(target.value)}
         />
@@ -83,14 +83,15 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
           value={gender}
           onChange={onGenderChange}
         >
-        {genderOptions.map(option =>
-          <MenuItem
-            key={option.label}
-            value={option.value}
-          >
-            {option.label
-          }</MenuItem>
-        )}
+          {genderOptions.map(option => (
+            <MenuItem
+              key={option.label}
+              value={option.value}
+            >
+              {option.label}
+            </MenuItem>
+          ),
+          )}
         </Select>
 
         <Grid container justifyContent="space-between" sx={{ marginTop: 2 }}>
@@ -115,7 +116,7 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
         </Grid>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default AddPatientForm;
+export default AddPatientForm
